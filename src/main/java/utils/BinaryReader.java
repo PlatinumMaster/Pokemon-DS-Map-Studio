@@ -33,6 +33,21 @@ public class BinaryReader {
         return new String(data);
     }
 
+    public long getPos() throws IOException
+    {
+        return fis.getChannel().position();
+    }
+
+    public void setPos(long pos) throws IOException
+    {
+        fis.skip(pos - getPos());
+    }
+
+    public long size() throws IOException
+    {
+        return getPos() + fis.available();
+    }
+
     public int readUInt8() throws IOException {
         return fis.read() & 0xFF;
     }

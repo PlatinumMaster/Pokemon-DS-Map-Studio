@@ -44,6 +44,12 @@ public class BuildingEditorChooser {
                 dialogHGSS.setLocationRelativeTo(handler.getMainFrame());
                 dialogHGSS.setVisible(true);
             } else if (isBWFolder(folderPath)) {
+                handler.setLastBuildDirectoryUsed(folderPath);
+                BuildHandlerWB buildHandler = new BuildHandlerWB(folderPath);
+                final BuildingEditorDialogWB dialogWB = new BuildingEditorDialogWB(handler.getMainFrame());
+                dialogWB.init(handler, buildHandler);
+                dialogWB.setLocationRelativeTo(handler.getMainFrame());
+                dialogWB.setVisible(true);
                 JOptionPane.showMessageDialog(handler.getMainFrame(),
                         "PlatinumMaster will be adding support for this momentarily.",
                         "Coming soon.", JOptionPane.ERROR_MESSAGE);
