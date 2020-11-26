@@ -27,4 +27,9 @@ public class AB {
     {
         Models.add(model);
     }
+
+    public byte[] getModel(int index)
+    {
+        return this.Models.get(index);
+    }
 }

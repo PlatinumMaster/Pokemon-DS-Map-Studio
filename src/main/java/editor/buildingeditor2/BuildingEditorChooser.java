@@ -48,6 +48,7 @@ public class BuildingEditorChooser {
                 BuildHandlerWB buildHandler = new BuildHandlerWB(folderPath);
                 final BuildingEditorDialogWB dialogWB = new BuildingEditorDialogWB(handler.getMainFrame());
                 dialogWB.init(handler, buildHandler);
+                dialogWB.loadGame(fc.getSelectedFile().getPath());
                 dialogWB.setLocationRelativeTo(handler.getMainFrame());
                 dialogWB.setVisible(true);
                 JOptionPane.showMessageDialog(handler.getMainFrame(),

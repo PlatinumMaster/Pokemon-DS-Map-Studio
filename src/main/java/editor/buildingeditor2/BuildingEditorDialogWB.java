@@ -8,15 +8,18 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import editor.buildingeditor2.wb.AB;
 import editor.handler.MapEditorHandler;
 import editor.nsbtx2.*;
 import net.miginfocom.swing.*;
 import renderer.*;
+import utils.Utils;
 
 /**
  * @author PlatinumMaster
@@ -24,15 +27,32 @@ import renderer.*;
 public class BuildingEditorDialogWB extends JDialog {
     private MapEditorHandler handler;
     private BuildHandlerWB buildHandler;
+    private JList<String> jlBuildModel;
 
     public BuildingEditorDialogWB(Window owner) {
         super(owner);
         initComponents();
+        nitroDisplayMap.getObjectsGL().add(new ObjectGL());
     }
 
     public void init(MapEditorHandler handler, BuildHandlerWB buildHandler) {
         this.handler = handler;
         this.buildHandler = buildHandler;
+    }
+
+    public void loadGame(String folderPath) {
+        buildHandler.setGameFolderPath(folderPath);
+        try {
+            buildHandler.loadAllFiles();
+            AB dat = buildHandler.getExtAB(0);
+            nitroDisplayMap.getObjectGL(0).setNsbmdData(dat.getModel(0));
+            nitroDisplayMap.requestUpdate();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "There was a problem reading some of the files.",
+                    "Error opening game files", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
     }
 
     private void jbOpenMapActionPerformed(ActionEvent e) {
@@ -151,7 +171,7 @@ public class BuildingEditorDialogWB extends JDialog {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Building Editor (Experimental)");
+        setTitle("Building Editor for Generation V (Experimental)");
         setModal(true);
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
@@ -167,12 +187,13 @@ public class BuildingEditorDialogWB extends JDialog {
 
             //======== jPanel13 ========
             {
-                jPanel13.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing.
-                border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDes\u0069gner \u0045valua\u0074ion", javax. swing. border. TitledBorder. CENTER
-                , javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("D\u0069alog" ,java .awt .Font
-                .BOLD ,12 ), java. awt. Color. red) ,jPanel13. getBorder( )) ); jPanel13. addPropertyChangeListener (
-                new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062order"
-                .equals (e .getPropertyName () )) throw new RuntimeException( ); }} );
+                jPanel13.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax
+                . swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDes\u0069gner \u0045valua\u0074ion", javax. swing
+                . border. TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .
+                Font ("D\u0069alog" ,java .awt .Font .BOLD ,12 ), java. awt. Color. red
+                ) ,jPanel13. getBorder( )) ); jPanel13. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override
+                public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062order" .equals (e .getPropertyName (
+                ) )) throw new RuntimeException( ); }} );
                 jPanel13.setLayout(new MigLayout(
                     "insets 0,hidemode 3,gap 5 5",
                     // columns
@@ -213,7 +234,10 @@ public class BuildingEditorDialogWB extends JDialog {
                     //---- jbOpenMap ----
                     jbOpenMap.setIcon(new ImageIcon(getClass().getResource("/icons/ImportTileIcon.png")));
                     jbOpenMap.setText("Open Map");
-                    jbOpenMap.addActionListener(e -> jbOpenMapActionPerformed(e));
+                    jbOpenMap.addActionListener(e -> {
+			jbOpenMapActionPerformed(e);
+			jbOpenMapActionPerformed(e);
+		});
                     jPanel14.add(jbOpenMap, "cell 0 0");
 
                     //---- jLabel26 ----
