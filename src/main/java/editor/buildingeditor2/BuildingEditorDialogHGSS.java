@@ -2211,14 +2211,14 @@ public class BuildingEditorDialogHGSS extends JDialog {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Building Editor (Experimental)");
         setModal(true);
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
-                "insets 0,hidemode 3,gap 5 5",
-                // columns
-                "[grow,fill]",
-                // rows
-                "[grow,fill]" +
-                        "[]"));
+            "insets 0,hidemode 3,gap 5 5",
+            // columns
+            "[grow,fill]",
+            // rows
+            "[grow,fill]" +
+            "[]"));
 
         //======== jTabbedPane1 ========
         {
@@ -2226,25 +2226,25 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel3 ========
             {
                 jPanel3.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
-                        // columns
-                        "[grow,fill]" +
-                                "[grow,fill]",
-                        // rows
-                        "[grow,fill]"));
+                    "insets 0,hidemode 3,gap 5 5",
+                    // columns
+                    "[grow,fill]" +
+                    "[grow,fill]",
+                    // rows
+                    "[grow,fill]"));
 
                 //======== jPanel1 ========
                 {
                     jPanel1.setBorder(new TitledBorder("Building Selector (build_model.narc)"));
                     jPanel1.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[grow,fill]" +
-                                    "[fill]" +
-                                    "[fill]",
-                            // rows
-                            "[fill]" +
-                                    "[grow,fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[grow,fill]" +
+                        "[fill]" +
+                        "[fill]",
+                        // rows
+                        "[fill]" +
+                        "[grow,fill]"));
 
                     //---- jLabel4 ----
                     jLabel4.setIcon(new ImageIcon(getClass().getResource("/icons/BuildingIcon.png")));
@@ -2259,12 +2259,12 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         GroupLayout nitroDisplayGLLayout = new GroupLayout(nitroDisplayGL);
                         nitroDisplayGL.setLayout(nitroDisplayGLLayout);
                         nitroDisplayGLLayout.setHorizontalGroup(
-                                nitroDisplayGLLayout.createParallelGroup()
-                                        .addGap(0, 510, Short.MAX_VALUE)
+                            nitroDisplayGLLayout.createParallelGroup()
+                                .addGap(0, 510, Short.MAX_VALUE)
                         );
                         nitroDisplayGLLayout.setVerticalGroup(
-                                nitroDisplayGLLayout.createParallelGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                            nitroDisplayGLLayout.createParallelGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                         );
                     }
                     jPanel1.add(nitroDisplayGL, "cell 0 0 1 2");
@@ -2279,16 +2279,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             String[] values = {
 
                             };
-
                             @Override
-                            public int getSize() {
-                                return values.length;
-                            }
-
+                            public int getSize() { return values.length; }
                             @Override
-                            public String getElementAt(int i) {
-                                return values[i];
-                            }
+                            public String getElementAt(int i) { return values[i]; }
                         });
                         jlBuildModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                         jlBuildModel.addListSelectionListener(e -> jlBuildModelValueChanged(e));
@@ -2299,10 +2293,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     //======== panel2 ========
                     {
                         panel2.setLayout(new GridBagLayout());
-                        ((GridBagLayout) panel2.getLayout()).columnWidths = new int[]{0, 0};
-                        ((GridBagLayout) panel2.getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0, 0};
-                        ((GridBagLayout) panel2.getLayout()).columnWeights = new double[]{0.0, 1.0E-4};
-                        ((GridBagLayout) panel2.getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                        ((GridBagLayout)panel2.getLayout()).columnWidths = new int[] {0, 0};
+                        ((GridBagLayout)panel2.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0};
+                        ((GridBagLayout)panel2.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
+                        ((GridBagLayout)panel2.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
                         //---- jbAddBuilding ----
                         jbAddBuilding.setIcon(new ImageIcon(getClass().getResource("/icons/AddIcon.png")));
@@ -2310,8 +2304,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbAddBuilding.setHorizontalAlignment(SwingConstants.LEFT);
                         jbAddBuilding.addActionListener(e -> jbAddBuildingActionPerformed(e));
                         panel2.add(jbAddBuilding, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbReplaceBuilding ----
                         jbReplaceBuilding.setIcon(new ImageIcon(getClass().getResource("/icons/ReplaceIcon.png")));
@@ -2319,8 +2313,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbReplaceBuilding.setHorizontalAlignment(SwingConstants.LEFT);
                         jbReplaceBuilding.addActionListener(e -> jbReplaceBuildingActionPerformed(e));
                         panel2.add(jbReplaceBuilding, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbExportBuilding ----
                         jbExportBuilding.setIcon(new ImageIcon(getClass().getResource("/icons/ExportIcon.png")));
@@ -2328,8 +2322,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbExportBuilding.setHorizontalAlignment(SwingConstants.LEFT);
                         jbExportBuilding.addActionListener(e -> jbExportBuildingActionPerformed(e));
                         panel2.add(jbExportBuilding, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbRemoveBuilding ----
                         jbRemoveBuilding.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -2338,8 +2332,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbRemoveBuilding.setHorizontalAlignment(SwingConstants.LEFT);
                         jbRemoveBuilding.addActionListener(e -> jbRemoveBuildingActionPerformed(e));
                         panel2.add(jbRemoveBuilding, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbFindBuilding ----
                         jbFindBuilding.setIcon(new ImageIcon(getClass().getResource("/icons/SearchIcon.png")));
@@ -2347,8 +2341,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbFindBuilding.setHorizontalAlignment(SwingConstants.LEFT);
                         jbFindBuilding.addActionListener(e -> jbFindBuildingActionPerformed(e));
                         panel2.add(jbFindBuilding, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 0, 0), 0, 0));
                     }
                     jPanel1.add(panel2, "cell 2 1");
                 }
@@ -2357,24 +2351,24 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 //======== panel3 ========
                 {
                     panel3.setLayout(new MigLayout(
-                            "hidemode 3",
-                            // columns
-                            "[grow,fill]",
-                            // rows
-                            "[grow,fill]" +
-                                    "[grow,fill]"));
+                        "hidemode 3",
+                        // columns
+                        "[grow,fill]",
+                        // rows
+                        "[grow,fill]" +
+                        "[grow,fill]"));
 
                     //======== jPanel2 ========
                     {
                         jPanel2.setBorder(new TitledBorder("Selected Building Properties (build_model_matshp.dat)"));
                         jPanel2.setLayout(new MigLayout(
-                                "insets 0,hidemode 3,gap 5 5",
-                                // columns
-                                "[grow,fill]" +
-                                        "[fill]",
-                                // rows
-                                "[fill]" +
-                                        "[grow,fill]"));
+                            "insets 0,hidemode 3,gap 5 5",
+                            // columns
+                            "[grow,fill]" +
+                            "[fill]",
+                            // rows
+                            "[fill]" +
+                            "[grow,fill]"));
 
                         //---- jLabel2 ----
                         jLabel2.setIcon(new ImageIcon(getClass().getResource("/icons/MaterialIcon2.png")));
@@ -2392,16 +2386,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                                 String[] values = {
 
                                 };
-
                                 @Override
-                                public int getSize() {
-                                    return values.length;
-                                }
-
+                                public int getSize() { return values.length; }
                                 @Override
-                                public String getElementAt(int i) {
-                                    return values[i];
-                                }
+                                public String getElementAt(int i) { return values[i]; }
                             });
                             jlMaterialOrder.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                             jScrollPane2.setViewportView(jlMaterialOrder);
@@ -2411,10 +2399,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         //======== panel4 ========
                         {
                             panel4.setLayout(new GridBagLayout());
-                            ((GridBagLayout) panel4.getLayout()).columnWidths = new int[]{0, 0, 0};
-                            ((GridBagLayout) panel4.getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0, 0};
-                            ((GridBagLayout) panel4.getLayout()).columnWeights = new double[]{1.0, 1.0, 1.0E-4};
-                            ((GridBagLayout) panel4.getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                            ((GridBagLayout)panel4.getLayout()).columnWidths = new int[] {0, 0, 0};
+                            ((GridBagLayout)panel4.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0};
+                            ((GridBagLayout)panel4.getLayout()).columnWeights = new double[] {1.0, 1.0, 1.0E-4};
+                            ((GridBagLayout)panel4.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
                             //---- jbAddMaterial ----
                             jbAddMaterial.setIcon(new ImageIcon(getClass().getResource("/icons/AddIcon.png")));
@@ -2422,8 +2410,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbAddMaterial.setHorizontalAlignment(SwingConstants.LEFT);
                             jbAddMaterial.addActionListener(e -> jbAddMaterialActionPerformed(e));
                             panel4.add(jbAddMaterial, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 5, 0), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 5, 0), 0, 0));
 
                             //---- jbRemoveMaterial ----
                             jbRemoveMaterial.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -2431,8 +2419,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbRemoveMaterial.setHorizontalAlignment(SwingConstants.LEFT);
                             jbRemoveMaterial.addActionListener(e -> jbRemoveMaterialActionPerformed(e));
                             panel4.add(jbRemoveMaterial, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 5, 0), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 5, 0), 0, 0));
 
                             //---- jbImportMaterialsFromNsbmd ----
                             jbImportMaterialsFromNsbmd.setIcon(new ImageIcon(getClass().getResource("/icons/ImportTileIcon.png")));
@@ -2440,8 +2428,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbImportMaterialsFromNsbmd.setHorizontalAlignment(SwingConstants.LEFT);
                             jbImportMaterialsFromNsbmd.addActionListener(e -> jbImportMaterialsFromNsbmdActionPerformed(e));
                             panel4.add(jbImportMaterialsFromNsbmd, new GridBagConstraints(0, 2, 2, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 5, 0), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 5, 0), 0, 0));
 
                             //---- jbSetAnimation ----
                             jbSetAnimation.setIcon(new ImageIcon(getClass().getResource("/icons/AnimationIcon.png")));
@@ -2449,22 +2437,22 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbSetAnimation.setHorizontalAlignment(SwingConstants.LEFT);
                             jbSetAnimation.addActionListener(e -> jbSetAnimationActionPerformed(e));
                             panel4.add(jbSetAnimation, new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 5, 0), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 5, 0), 0, 0));
 
                             //---- jbMoveMaterialUp ----
                             jbMoveMaterialUp.setText("\u25b2");
                             jbMoveMaterialUp.addActionListener(e -> jbMoveMaterialUpActionPerformed(e));
                             panel4.add(jbMoveMaterialUp, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 0, 5), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 5), 0, 0));
 
                             //---- jbMoveMaterialDown ----
                             jbMoveMaterialDown.setText("\u25bc");
                             jbMoveMaterialDown.addActionListener(e -> jbMoveMaterialDownActionPerformed(e));
                             panel4.add(jbMoveMaterialDown, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 0, 0), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0), 0, 0));
                         }
                         jPanel2.add(panel4, "cell 1 1");
                     }
@@ -2474,14 +2462,14 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     {
                         jPanel8.setBorder(new TitledBorder("Selected Building Animations (bm_anime_list.narc)"));
                         jPanel8.setLayout(new MigLayout(
-                                "insets 0,hidemode 3,gap 5 5",
-                                // columns
-                                "[grow,fill]" +
-                                        "[fill]",
-                                // rows
-                                "[fill]" +
-                                        "[grow,fill]" +
-                                        "[fill]"));
+                            "insets 0,hidemode 3,gap 5 5",
+                            // columns
+                            "[grow,fill]" +
+                            "[fill]",
+                            // rows
+                            "[fill]" +
+                            "[grow,fill]" +
+                            "[fill]"));
 
                         //---- jLabel3 ----
                         jLabel3.setIcon(new ImageIcon(getClass().getResource("/icons/AnimationIcon.png")));
@@ -2499,16 +2487,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                                 String[] values = {
 
                                 };
-
                                 @Override
-                                public int getSize() {
-                                    return values.length;
-                                }
-
+                                public int getSize() { return values.length; }
                                 @Override
-                                public String getElementAt(int i) {
-                                    return values[i];
-                                }
+                                public String getElementAt(int i) { return values[i]; }
                             });
                             jlSelectedAnimationsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                             jScrollPane3.setViewportView(jlSelectedAnimationsList);
@@ -2518,10 +2500,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         //======== panel5 ========
                         {
                             panel5.setLayout(new GridBagLayout());
-                            ((GridBagLayout) panel5.getLayout()).columnWidths = new int[]{0, 0};
-                            ((GridBagLayout) panel5.getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0};
-                            ((GridBagLayout) panel5.getLayout()).columnWeights = new double[]{1.0, 1.0E-4};
-                            ((GridBagLayout) panel5.getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                            ((GridBagLayout)panel5.getLayout()).columnWidths = new int[] {0, 0};
+                            ((GridBagLayout)panel5.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0};
+                            ((GridBagLayout)panel5.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
+                            ((GridBagLayout)panel5.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
                             //---- jbAddAnimToBuild ----
                             jbAddAnimToBuild.setIcon(new ImageIcon(getClass().getResource("/icons/AddIcon.png")));
@@ -2529,8 +2511,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbAddAnimToBuild.setHorizontalAlignment(SwingConstants.LEFT);
                             jbAddAnimToBuild.addActionListener(e -> jbAddAnimToBuildActionPerformed(e));
                             panel5.add(jbAddAnimToBuild, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 0, 0), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0), 0, 0));
 
                             //---- jbReplaceAnimToBuild ----
                             jbReplaceAnimToBuild.setIcon(new ImageIcon(getClass().getResource("/icons/ReplaceIcon.png")));
@@ -2538,8 +2520,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbReplaceAnimToBuild.setHorizontalAlignment(SwingConstants.LEFT);
                             jbReplaceAnimToBuild.addActionListener(e -> jbReplaceAnimToBuildActionPerformed(e));
                             panel5.add(jbReplaceAnimToBuild, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 0, 0), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0), 0, 0));
 
                             //---- jbRemoveAnimToBuild ----
                             jbRemoveAnimToBuild.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -2547,8 +2529,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbRemoveAnimToBuild.setHorizontalAlignment(SwingConstants.LEFT);
                             jbRemoveAnimToBuild.addActionListener(e -> jbRemoveAnimToBuildActionPerformed(e));
                             panel5.add(jbRemoveAnimToBuild, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 0, 0), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0), 0, 0));
 
                             //---- jbPlay ----
                             jbPlay.setIcon(new ImageIcon(getClass().getResource("/icons/AnimationIcon.png")));
@@ -2556,36 +2538,36 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbPlay.setHorizontalAlignment(SwingConstants.LEFT);
                             jbPlay.addActionListener(e -> jbPlayActionPerformed(e));
                             panel5.add(jbPlay, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
-                                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                    new Insets(0, 0, 0, 0), 0, 0));
+                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0), 0, 0));
                         }
                         jPanel8.add(panel5, "cell 1 1");
 
                         //======== panel6 ========
                         {
                             panel6.setLayout(new MigLayout(
-                                    "hidemode 3",
-                                    // columns
-                                    "[fill]" +
-                                            "[grow,fill]" +
-                                            "[fill]" +
-                                            "[grow,fill]",
-                                    // rows
-                                    "[]" +
-                                            "[]" +
-                                            "[]"));
+                                "hidemode 3",
+                                // columns
+                                "[fill]" +
+                                "[grow,fill]" +
+                                "[fill]" +
+                                "[grow,fill]",
+                                // rows
+                                "[]" +
+                                "[]" +
+                                "[]"));
 
                             //---- jLabel12 ----
                             jLabel12.setText("Type 1:");
                             panel6.add(jLabel12, "cell 0 0");
 
                             //---- jcbAnimType1 ----
-                            jcbAnimType1.setModel(new DefaultComboBoxModel<>(new String[]{
-                                    "No animation",
-                                    "Loop",
-                                    "Trigger (?)",
-                                    "Trigger",
-                                    "Day/Night Cycle"
+                            jcbAnimType1.setModel(new DefaultComboBoxModel<>(new String[] {
+                                "No animation",
+                                "Loop",
+                                "Trigger (?)",
+                                "Trigger",
+                                "Day/Night Cycle"
                             }));
                             jcbAnimType1.addActionListener(e -> jcbAnimType1ActionPerformed(e));
                             panel6.add(jcbAnimType1, "cell 1 0");
@@ -2595,9 +2577,9 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             panel6.add(jLabel22, "cell 2 0");
 
                             //---- jcbLoopType ----
-                            jcbLoopType.setModel(new DefaultComboBoxModel<>(new String[]{
-                                    "Loop",
-                                    "Trigger"
+                            jcbLoopType.setModel(new DefaultComboBoxModel<>(new String[] {
+                                "Loop",
+                                "Trigger"
                             }));
                             jcbLoopType.addActionListener(e -> jcbLoopTypeActionPerformed(e));
                             panel6.add(jcbLoopType, "cell 3 0");
@@ -2607,10 +2589,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             panel6.add(jLabel25, "cell 0 1");
 
                             //---- jcbAnimType2 ----
-                            jcbAnimType2.setModel(new DefaultComboBoxModel<>(new String[]{
-                                    "No animation",
-                                    "Loop",
-                                    "Trigger"
+                            jcbAnimType2.setModel(new DefaultComboBoxModel<>(new String[] {
+                                "No animation",
+                                "Loop",
+                                "Trigger"
                             }));
                             jcbAnimType2.addActionListener(e -> jcbAnimType2ActionPerformed(e));
                             panel6.add(jcbAnimType2, "cell 1 1");
@@ -2620,12 +2602,12 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             panel6.add(jLabel24, "cell 2 1");
 
                             //---- jcbNumAnims ----
-                            jcbNumAnims.setModel(new DefaultComboBoxModel<>(new String[]{
-                                    "0",
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4"
+                            jcbNumAnims.setModel(new DefaultComboBoxModel<>(new String[] {
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4"
                             }));
                             jcbNumAnims.addActionListener(e -> jcbNumAnimsActionPerformed(e));
                             panel6.add(jcbNumAnims, "cell 3 1");
@@ -2635,11 +2617,11 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             panel6.add(jLabel23, "cell 0 2");
 
                             //---- jcbUnknown1 ----
-                            jcbUnknown1.setModel(new DefaultComboBoxModel<>(new String[]{
-                                    "0",
-                                    "1",
-                                    "2",
-                                    "3"
+                            jcbUnknown1.setModel(new DefaultComboBoxModel<>(new String[] {
+                                "0",
+                                "1",
+                                "2",
+                                "3"
                             }));
                             jcbUnknown1.addActionListener(e -> jcbUnknown1ActionPerformed(e));
                             panel6.add(jcbUnknown1, "cell 1 2");
@@ -2655,26 +2637,26 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel4 ========
             {
                 jPanel4.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
-                        // columns
-                        "[grow,fill]" +
-                                "[grow,fill]" +
-                                "[grow,fill]",
-                        // rows
-                        "[grow,fill]" +
-                                "[grow,fill]"));
+                    "insets 0,hidemode 3,gap 5 5",
+                    // columns
+                    "[grow,fill]" +
+                    "[grow,fill]" +
+                    "[grow,fill]",
+                    // rows
+                    "[grow,fill]" +
+                    "[grow,fill]"));
 
                 //======== jPanel5 ========
                 {
                     jPanel5.setBorder(new TitledBorder("Area Data Selector (area_data.narc)"));
                     jPanel5.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[grow,fill]" +
-                                    "[fill]",
-                            // rows
-                            "[fill]" +
-                                    "[grow,fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[grow,fill]" +
+                        "[fill]",
+                        // rows
+                        "[fill]" +
+                        "[grow,fill]"));
 
                     //---- jLabel1 ----
                     jLabel1.setIcon(new ImageIcon(getClass().getResource("/icons/AreaDataIcon.png")));
@@ -2691,16 +2673,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             String[] values = {
 
                             };
-
                             @Override
-                            public int getSize() {
-                                return values.length;
-                            }
-
+                            public int getSize() { return values.length; }
                             @Override
-                            public String getElementAt(int i) {
-                                return values[i];
-                            }
+                            public String getElementAt(int i) { return values[i]; }
                         });
                         jlAreaDataList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                         jlAreaDataList.addListSelectionListener(e -> jlAreaDataListValueChanged(e));
@@ -2711,10 +2687,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     //======== panel7 ========
                     {
                         panel7.setLayout(new GridBagLayout());
-                        ((GridBagLayout) panel7.getLayout()).columnWidths = new int[]{0, 0};
-                        ((GridBagLayout) panel7.getLayout()).rowHeights = new int[]{0, 0, 0};
-                        ((GridBagLayout) panel7.getLayout()).columnWeights = new double[]{0.0, 1.0E-4};
-                        ((GridBagLayout) panel7.getLayout()).rowWeights = new double[]{0.0, 0.0, 1.0E-4};
+                        ((GridBagLayout)panel7.getLayout()).columnWidths = new int[] {0, 0};
+                        ((GridBagLayout)panel7.getLayout()).rowHeights = new int[] {0, 0, 0};
+                        ((GridBagLayout)panel7.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
+                        ((GridBagLayout)panel7.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
 
                         //---- jbAddAreaData ----
                         jbAddAreaData.setIcon(new ImageIcon(getClass().getResource("/icons/AddIcon.png")));
@@ -2722,8 +2698,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbAddAreaData.setHorizontalAlignment(SwingConstants.LEFT);
                         jbAddAreaData.addActionListener(e -> jbAddAreaDataActionPerformed(e));
                         panel7.add(jbAddAreaData, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbRemoveAreaData ----
                         jbRemoveAreaData.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -2731,8 +2707,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbRemoveAreaData.setHorizontalAlignment(SwingConstants.LEFT);
                         jbRemoveAreaData.addActionListener(e -> jbRemoveAreaDataActionPerformed(e));
                         panel7.add(jbRemoveAreaData, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 0, 0), 0, 0));
                     }
                     jPanel5.add(panel7, "cell 1 1");
                 }
@@ -2742,17 +2718,17 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel6.setBorder(new TitledBorder("Area Data Properties"));
                     jPanel6.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[fill]" +
-                                    "[grow,fill]" +
-                                    "[fill]",
-                            // rows
-                            "[fill]" +
-                                    "[fill]" +
-                                    "[fill]" +
-                                    "[fill]" +
-                                    "[fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[fill]" +
+                        "[grow,fill]" +
+                        "[fill]",
+                        // rows
+                        "[fill]" +
+                        "[fill]" +
+                        "[fill]" +
+                        "[fill]" +
+                        "[fill]"));
 
                     //---- jLabel5 ----
                     jLabel5.setText("Building Tileset:");
@@ -2779,9 +2755,9 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     jPanel6.add(jbApplyMapTset, "cell 2 1");
 
                     //---- jcbAreaType ----
-                    jcbAreaType.setModel(new DefaultComboBoxModel<>(new String[]{
-                            "Indoor Area",
-                            "Outdoor Area"
+                    jcbAreaType.setModel(new DefaultComboBoxModel<>(new String[] {
+                        "Indoor Area",
+                        "Outdoor Area"
                     }));
                     jcbAreaType.addActionListener(e -> jcbAreaTypeActionPerformed(e));
                     jPanel6.add(jcbAreaType, "cell 1 3 2 1");
@@ -2791,7 +2767,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     jPanel6.add(jLabel27, "cell 0 2");
 
                     //---- jcbDynamicTex ----
-                    jcbDynamicTex.setModel(new DefaultComboBoxModel<>(new String[]{
+                    jcbDynamicTex.setModel(new DefaultComboBoxModel<>(new String[] {
 
                     }));
                     jcbDynamicTex.addActionListener(e -> jcbDynamicTexActionPerformed(e));
@@ -2802,10 +2778,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     jPanel6.add(jLabel28, "cell 0 4");
 
                     //---- jcbAreaLight ----
-                    jcbAreaLight.setModel(new DefaultComboBoxModel<>(new String[]{
-                            "Model's Light",
-                            "Day/Night Light",
-                            "Unknown Light"
+                    jcbAreaLight.setModel(new DefaultComboBoxModel<>(new String[] {
+                        "Model's Light",
+                        "Day/Night Light",
+                        "Unknown Light"
                     }));
                     jcbAreaLight.addActionListener(e -> jcbAreaLightActionPerformed(e));
                     jPanel6.add(jcbAreaLight, "cell 1 4 2 1");
@@ -2816,13 +2792,13 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel20.setBorder(new TitledBorder("Map Animations Display"));
                     jPanel20.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[grow,fill]",
-                            // rows
-                            "[fill]" +
-                                    "[fill]" +
-                                    "[grow,fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[grow,fill]",
+                        // rows
+                        "[fill]" +
+                        "[fill]" +
+                        "[grow,fill]"));
 
                     //======== nitroDisplayMapAnims ========
                     {
@@ -2831,12 +2807,12 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         GroupLayout nitroDisplayMapAnimsLayout = new GroupLayout(nitroDisplayMapAnims);
                         nitroDisplayMapAnims.setLayout(nitroDisplayMapAnimsLayout);
                         nitroDisplayMapAnimsLayout.setHorizontalGroup(
-                                nitroDisplayMapAnimsLayout.createParallelGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                            nitroDisplayMapAnimsLayout.createParallelGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                         );
                         nitroDisplayMapAnimsLayout.setVerticalGroup(
-                                nitroDisplayMapAnimsLayout.createParallelGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                            nitroDisplayMapAnimsLayout.createParallelGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                         );
                     }
                     jPanel20.add(nitroDisplayMapAnims, "cell 0 2");
@@ -2857,17 +2833,17 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel21.setBorder(new TitledBorder("Map Animations (Dynamic Textures)"));
                     jPanel21.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[grow,fill]" +
-                                    "[fill]",
-                            // rows
-                            "[fill]" +
-                                    "[fill]" +
-                                    "[fill]" +
-                                    "[fill]" +
-                                    "[fill]" +
-                                    "[fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[grow,fill]" +
+                        "[fill]",
+                        // rows
+                        "[fill]" +
+                        "[fill]" +
+                        "[fill]" +
+                        "[fill]" +
+                        "[fill]" +
+                        "[fill]"));
 
                     //---- jLabel7 ----
                     jLabel7.setIcon(new ImageIcon(getClass().getResource("/icons/AnimationIcon.png")));
@@ -2884,16 +2860,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             String[] values = {
 
                             };
-
                             @Override
-                            public int getSize() {
-                                return values.length;
-                            }
-
+                            public int getSize() { return values.length; }
                             @Override
-                            public String getElementAt(int i) {
-                                return values[i];
-                            }
+                            public String getElementAt(int i) { return values[i]; }
                         });
                         jlMapAnimationsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                         jScrollPane9.setViewportView(jlMapAnimationsList);
@@ -2943,24 +2913,24 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel7 ========
             {
                 jPanel7.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
-                        // columns
-                        "[grow,fill]" +
-                                "[grow,fill]",
-                        // rows
-                        "[grow,fill]"));
+                    "insets 0,hidemode 3,gap 5 5",
+                    // columns
+                    "[grow,fill]" +
+                    "[grow,fill]",
+                    // rows
+                    "[grow,fill]"));
 
                 //======== jPanel10 ========
                 {
                     jPanel10.setBorder(new TitledBorder("Building Tileset Selector (areabm_texset.narc)"));
                     jPanel10.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[grow,fill]" +
-                                    "[grow,fill]",
-                            // rows
-                            "[fill]" +
-                                    "[grow,fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[grow,fill]" +
+                        "[grow,fill]",
+                        // rows
+                        "[fill]" +
+                        "[grow,fill]"));
 
                     //======== jScrollPane6 ========
                     {
@@ -2972,16 +2942,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             String[] values = {
 
                             };
-
                             @Override
-                            public int getSize() {
-                                return values.length;
-                            }
-
+                            public int getSize() { return values.length; }
                             @Override
-                            public String getElementAt(int i) {
-                                return values[i];
-                            }
+                            public String getElementAt(int i) { return values[i]; }
                         });
                         jlBuildTsetList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                         jlBuildTsetList.addListSelectionListener(e -> jlBuildTsetListValueChanged(e));
@@ -2997,10 +2961,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     //======== panel8 ========
                     {
                         panel8.setLayout(new GridBagLayout());
-                        ((GridBagLayout) panel8.getLayout()).columnWidths = new int[]{0, 0};
-                        ((GridBagLayout) panel8.getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0, 0};
-                        ((GridBagLayout) panel8.getLayout()).columnWeights = new double[]{1.0, 1.0E-4};
-                        ((GridBagLayout) panel8.getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                        ((GridBagLayout)panel8.getLayout()).columnWidths = new int[] {0, 0};
+                        ((GridBagLayout)panel8.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0};
+                        ((GridBagLayout)panel8.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
+                        ((GridBagLayout)panel8.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
                         //---- jbAddTset ----
                         jbAddTset.setIcon(new ImageIcon(getClass().getResource("/icons/AddIcon.png")));
@@ -3008,8 +2972,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbAddTset.setHorizontalAlignment(SwingConstants.LEFT);
                         jbAddTset.addActionListener(e -> jbAddTsetActionPerformed(e));
                         panel8.add(jbAddTset, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbAddEmptyTileset ----
                         jbAddEmptyTileset.setIcon(new ImageIcon(getClass().getResource("/icons/AddIcon.png")));
@@ -3017,8 +2981,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbAddEmptyTileset.setHorizontalAlignment(SwingConstants.LEFT);
                         jbAddEmptyTileset.addActionListener(e -> jbAddEmptyTilesetActionPerformed(e));
                         panel8.add(jbAddEmptyTileset, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbReplaceTset ----
                         jbReplaceTset.setIcon(new ImageIcon(getClass().getResource("/icons/ReplaceIcon.png")));
@@ -3026,8 +2990,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbReplaceTset.setHorizontalAlignment(SwingConstants.LEFT);
                         jbReplaceTset.addActionListener(e -> jbReplaceTsetActionPerformed(e));
                         panel8.add(jbReplaceTset, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbExportTileset ----
                         jbExportTileset.setIcon(new ImageIcon(getClass().getResource("/icons/ExportIcon.png")));
@@ -3035,8 +2999,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbExportTileset.setHorizontalAlignment(SwingConstants.LEFT);
                         jbExportTileset.addActionListener(e -> jbExportTilesetActionPerformed(e));
                         panel8.add(jbExportTileset, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbRemoveTset ----
                         jbRemoveTset.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -3045,8 +3009,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbRemoveTset.setHorizontalAlignment(SwingConstants.LEFT);
                         jbRemoveTset.addActionListener(e -> jbRemoveTsetActionPerformed(e));
                         panel8.add(jbRemoveTset, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 0, 0), 0, 0));
                     }
                     jPanel10.add(panel8, "cell 1 1");
                     jPanel10.add(nsbtxPanel, "cell 0 0 1 2");
@@ -3057,14 +3021,14 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel11.setBorder(new TitledBorder("Building Tileset Properties (area_build.narc)"));
                     jPanel11.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[grow,fill]" +
-                                    "[grow,fill]",
-                            // rows
-                            "[fill]" +
-                                    "[fill]" +
-                                    "[grow,fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[grow,fill]" +
+                        "[grow,fill]",
+                        // rows
+                        "[fill]" +
+                        "[fill]" +
+                        "[grow,fill]"));
 
                     //---- jLabel9 ----
                     jLabel9.setIcon(new ImageIcon(getClass().getResource("/icons/BuildingIcon.png")));
@@ -3081,16 +3045,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             String[] values = {
 
                             };
-
                             @Override
-                            public int getSize() {
-                                return values.length;
-                            }
-
+                            public int getSize() { return values.length; }
                             @Override
-                            public String getElementAt(int i) {
-                                return values[i];
-                            }
+                            public String getElementAt(int i) { return values[i]; }
                         });
                         jlAreaBuildList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                         jlAreaBuildList.addListSelectionListener(e -> jlAreaBuildListValueChanged(e));
@@ -3101,10 +3059,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     //======== panel9 ========
                     {
                         panel9.setLayout(new GridBagLayout());
-                        ((GridBagLayout) panel9.getLayout()).columnWidths = new int[]{0, 0};
-                        ((GridBagLayout) panel9.getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
-                        ((GridBagLayout) panel9.getLayout()).columnWeights = new double[]{1.0, 1.0E-4};
-                        ((GridBagLayout) panel9.getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                        ((GridBagLayout)panel9.getLayout()).columnWidths = new int[] {0, 0};
+                        ((GridBagLayout)panel9.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0};
+                        ((GridBagLayout)panel9.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
+                        ((GridBagLayout)panel9.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
                         //---- jbAddBuildToTset ----
                         jbAddBuildToTset.setIcon(new ImageIcon(getClass().getResource("/icons/AddIcon.png")));
@@ -3112,8 +3070,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbAddBuildToTset.setHorizontalAlignment(SwingConstants.LEFT);
                         jbAddBuildToTset.addActionListener(e -> jbAddBuildToTsetActionPerformed(e));
                         panel9.add(jbAddBuildToTset, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbReplaceBuildToTset ----
                         jbReplaceBuildToTset.setIcon(new ImageIcon(getClass().getResource("/icons/ReplaceIcon.png")));
@@ -3121,8 +3079,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbReplaceBuildToTset.setHorizontalAlignment(SwingConstants.LEFT);
                         jbReplaceBuildToTset.addActionListener(e -> jbReplaceBuildToTsetActionPerformed(e));
                         panel9.add(jbReplaceBuildToTset, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbRemoveBuildToTset ----
                         jbRemoveBuildToTset.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -3130,8 +3088,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbRemoveBuildToTset.setHorizontalAlignment(SwingConstants.LEFT);
                         jbRemoveBuildToTset.addActionListener(e -> jbRemoveBuildToTsetActionPerformed(e));
                         panel9.add(jbRemoveBuildToTset, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbAddTexToNsbtx ----
                         jbAddTexToNsbtx.setIcon(new ImageIcon(getClass().getResource("/icons/AddIcon.png")));
@@ -3139,8 +3097,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbAddTexToNsbtx.setHorizontalAlignment(SwingConstants.LEFT);
                         jbAddTexToNsbtx.addActionListener(e -> jbAddTexToNsbtxActionPerformed(e));
                         panel9.add(jbAddTexToNsbtx, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbRemoveTextures ----
                         jbRemoveTextures.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -3149,8 +3107,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbRemoveTextures.setHorizontalAlignment(SwingConstants.LEFT);
                         jbRemoveTextures.addActionListener(e -> jbRemoveTexturesActionPerformed(e));
                         panel9.add(jbRemoveTextures, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbRemoveAllUnusedTexPals ----
                         jbRemoveAllUnusedTexPals.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -3158,8 +3116,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbRemoveAllUnusedTexPals.setHorizontalAlignment(SwingConstants.LEFT);
                         jbRemoveAllUnusedTexPals.addActionListener(e -> jbRemoveAllUnusedTexPalsActionPerformed(e));
                         panel9.add(jbRemoveAllUnusedTexPals, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 0, 0), 0, 0));
                     }
                     jPanel11.add(panel9, "cell 1 1");
 
@@ -3170,12 +3128,12 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         GroupLayout nitroDisplayAreaDataLayout = new GroupLayout(nitroDisplayAreaData);
                         nitroDisplayAreaData.setLayout(nitroDisplayAreaDataLayout);
                         nitroDisplayAreaDataLayout.setHorizontalGroup(
-                                nitroDisplayAreaDataLayout.createParallelGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                            nitroDisplayAreaDataLayout.createParallelGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                         );
                         nitroDisplayAreaDataLayout.setVerticalGroup(
-                                nitroDisplayAreaDataLayout.createParallelGroup()
-                                        .addGap(0, 384, Short.MAX_VALUE)
+                            nitroDisplayAreaDataLayout.createParallelGroup()
+                                .addGap(0, 384, Short.MAX_VALUE)
                         );
                     }
                     jPanel11.add(nitroDisplayAreaData, "cell 1 2");
@@ -3187,23 +3145,23 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel9 ========
             {
                 jPanel9.setLayout(new MigLayout(
-                        "insets 0,hidemode 3",
-                        // columns
-                        "[fill]",
-                        // rows
-                        "[grow,fill]"));
+                    "insets 0,hidemode 3",
+                    // columns
+                    "[fill]",
+                    // rows
+                    "[grow,fill]"));
 
                 //======== jPanel12 ========
                 {
                     jPanel12.setBorder(new TitledBorder("Selected Building Animations (bm_anime.narc)"));
                     jPanel12.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[fill]" +
-                                    "[fill]",
-                            // rows
-                            "[fill]" +
-                                    "[grow,fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[fill]" +
+                        "[fill]",
+                        // rows
+                        "[fill]" +
+                        "[grow,fill]"));
 
                     //---- jLabel11 ----
                     jLabel11.setIcon(new ImageIcon(getClass().getResource("/icons/AnimationIcon.png")));
@@ -3214,10 +3172,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     //======== panel10 ========
                     {
                         panel10.setLayout(new GridBagLayout());
-                        ((GridBagLayout) panel10.getLayout()).columnWidths = new int[]{0, 0};
-                        ((GridBagLayout) panel10.getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0};
-                        ((GridBagLayout) panel10.getLayout()).columnWeights = new double[]{0.0, 1.0E-4};
-                        ((GridBagLayout) panel10.getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                        ((GridBagLayout)panel10.getLayout()).columnWidths = new int[] {0, 0};
+                        ((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0};
+                        ((GridBagLayout)panel10.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
+                        ((GridBagLayout)panel10.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
                         //---- jbAddAnim ----
                         jbAddAnim.setIcon(new ImageIcon(getClass().getResource("/icons/AddIcon.png")));
@@ -3225,8 +3183,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbAddAnim.setHorizontalAlignment(SwingConstants.LEFT);
                         jbAddAnim.addActionListener(e -> jbAddAnimActionPerformed(e));
                         panel10.add(jbAddAnim, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbReplaceAnim ----
                         jbReplaceAnim.setIcon(new ImageIcon(getClass().getResource("/icons/ReplaceIcon.png")));
@@ -3234,8 +3192,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbReplaceAnim.setHorizontalAlignment(SwingConstants.LEFT);
                         jbReplaceAnim.addActionListener(e -> jbReplaceAnimActionPerformed(e));
                         panel10.add(jbReplaceAnim, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbExportAnimation ----
                         jbExportAnimation.setIcon(new ImageIcon(getClass().getResource("/icons/ExportIcon.png")));
@@ -3243,8 +3201,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbExportAnimation.setHorizontalAlignment(SwingConstants.LEFT);
                         jbExportAnimation.addActionListener(e -> jbExportAnimationActionPerformed(e));
                         panel10.add(jbExportAnimation, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 5, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 5, 0), 0, 0));
 
                         //---- jbRemoveAnim ----
                         jbRemoveAnim.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -3253,8 +3211,8 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         jbRemoveAnim.setHorizontalAlignment(SwingConstants.LEFT);
                         jbRemoveAnim.addActionListener(e -> jbRemoveAnimActionPerformed(e));
                         panel10.add(jbRemoveAnim, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
-                                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0), 0, 0));
+                            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                            new Insets(0, 0, 0, 0), 0, 0));
                     }
                     jPanel12.add(panel10, "cell 1 1");
 
@@ -3268,16 +3226,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             String[] values = {
 
                             };
-
                             @Override
-                            public int getSize() {
-                                return values.length;
-                            }
-
+                            public int getSize() { return values.length; }
                             @Override
-                            public String getElementAt(int i) {
-                                return values[i];
-                            }
+                            public String getElementAt(int i) { return values[i]; }
                         });
                         jlAnimationsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                         jScrollPane5.setViewportView(jlAnimationsList);
@@ -3291,24 +3243,24 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel13 ========
             {
                 jPanel13.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
-                        // columns
-                        "[grow,fill]" +
-                                "[grow,fill]",
-                        // rows
-                        "[grow,fill]"));
+                    "insets 0,hidemode 3,gap 5 5",
+                    // columns
+                    "[grow,fill]" +
+                    "[grow,fill]",
+                    // rows
+                    "[grow,fill]"));
 
                 //======== jPanel14 ========
                 {
                     jPanel14.setBorder(new TitledBorder("Map Display"));
                     jPanel14.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[fill]" +
-                                    "[grow,fill]",
-                            // rows
-                            "[fill]" +
-                                    "[grow,fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[fill]" +
+                        "[grow,fill]",
+                        // rows
+                        "[fill]" +
+                        "[grow,fill]"));
 
                     //======== nitroDisplayMap ========
                     {
@@ -3317,12 +3269,12 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         GroupLayout nitroDisplayMapLayout = new GroupLayout(nitroDisplayMap);
                         nitroDisplayMap.setLayout(nitroDisplayMapLayout);
                         nitroDisplayMapLayout.setHorizontalGroup(
-                                nitroDisplayMapLayout.createParallelGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                            nitroDisplayMapLayout.createParallelGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                         );
                         nitroDisplayMapLayout.setVerticalGroup(
-                                nitroDisplayMapLayout.createParallelGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                            nitroDisplayMapLayout.createParallelGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                         );
                     }
                     jPanel14.add(nitroDisplayMap, "cell 0 1 2 1");
@@ -3343,13 +3295,13 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel15.setBorder(new TitledBorder("Building Editor (*.bld)"));
                     jPanel15.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[grow,fill]" +
-                                    "[fill]",
-                            // rows
-                            "[fill]" +
-                                    "[grow,fill]"));
+                        "insets 0,hidemode 3,gap 5 5",
+                        // columns
+                        "[grow,fill]" +
+                        "[fill]",
+                        // rows
+                        "[fill]" +
+                        "[grow,fill]"));
 
                     //======== jScrollPane8 ========
                     {
@@ -3361,16 +3313,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             String[] values = {
 
                             };
-
                             @Override
-                            public int getSize() {
-                                return values.length;
-                            }
-
+                            public int getSize() { return values.length; }
                             @Override
-                            public String getElementAt(int i) {
-                                return values[i];
-                            }
+                            public String getElementAt(int i) { return values[i]; }
                         });
                         jlBuildFile.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                         jlBuildFile.addListSelectionListener(e -> jlBuildFileValueChanged(e));
@@ -3382,18 +3328,18 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     {
                         jPanel16.setBorder(new TitledBorder("Selected Building"));
                         jPanel16.setLayout(new MigLayout(
-                                "insets 0,hidemode 3,gap 5 5",
-                                // columns
-                                "[fill]" +
-                                        "[grow,fill]" +
-                                        "[fill]" +
-                                        "[grow,fill]",
-                                // rows
-                                "[fill]" +
-                                        "[fill]" +
-                                        "[fill]" +
-                                        "[fill]" +
-                                        "[fill]"));
+                            "insets 0,hidemode 3,gap 5 5",
+                            // columns
+                            "[fill]" +
+                            "[grow,fill]" +
+                            "[fill]" +
+                            "[grow,fill]",
+                            // rows
+                            "[fill]" +
+                            "[fill]" +
+                            "[fill]" +
+                            "[fill]" +
+                            "[fill]"));
 
                         //---- jLabel13 ----
                         jLabel13.setText("Building ID:");
@@ -3530,29 +3476,29 @@ public class BuildingEditorDialogHGSS extends JDialog {
         //======== panel1 ========
         {
             panel1.setLayout(new GridBagLayout());
-            ((GridBagLayout) panel1.getLayout()).columnWidths = new int[]{0, 0, 0, 0, 0, 0};
-            ((GridBagLayout) panel1.getLayout()).rowHeights = new int[]{0, 0};
-            ((GridBagLayout) panel1.getLayout()).columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
-            ((GridBagLayout) panel1.getLayout()).rowWeights = new double[]{0.0, 1.0E-4};
+            ((GridBagLayout)panel1.getLayout()).columnWidths = new int[] {0, 0, 0, 0, 0, 0};
+            ((GridBagLayout)panel1.getLayout()).rowHeights = new int[] {0, 0};
+            ((GridBagLayout)panel1.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+            ((GridBagLayout)panel1.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
             panel1.add(hSpacer1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 5), 0, 0));
 
             //---- jLabel21 ----
             jLabel21.setText("Models Selected:");
             panel1.add(jLabel21, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 5), 0, 0));
 
             //---- jcbModelsSelected ----
-            jcbModelsSelected.setModel(new DefaultComboBoxModel<>(new String[]{
-                    "Outdoor Models",
-                    "Indoor Models"
+            jcbModelsSelected.setModel(new DefaultComboBoxModel<>(new String[] {
+                "Outdoor Models",
+                "Indoor Models"
             }));
             jcbModelsSelected.addActionListener(e -> jcbModelsSelectedActionPerformed(e));
             panel1.add(jcbModelsSelected, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 5), 0, 0));
 
             //---- jbSaveAll ----
             jbSaveAll.setText("Save All");
@@ -3561,16 +3507,16 @@ public class BuildingEditorDialogHGSS extends JDialog {
             jbSaveAll.setPreferredSize(new Dimension(100, 30));
             jbSaveAll.addActionListener(e -> jbSaveAllActionPerformed(e));
             panel1.add(jbSaveAll, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 5), 0, 0));
 
             //---- jbCancel ----
             jbCancel.setText("Close");
             jbCancel.setPreferredSize(new Dimension(100, 30));
             jbCancel.addActionListener(e -> jbCancelActionPerformed(e));
             panel1.add(jbCancel, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 0), 0, 0));
         }
         contentPane.add(panel1, "cell 0 1");
         pack();

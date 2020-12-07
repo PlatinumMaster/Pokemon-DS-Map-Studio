@@ -2,13 +2,11 @@ package editor.buildingeditor2;
 
 import editor.buildingeditor2.animations.BuildAnimations;
 import editor.buildingeditor2.animations.MapAnimations;
+import editor.buildingeditor2.animations.ModelAnimation;
 import editor.buildingeditor2.areabuild.AreaBuildList;
 import editor.buildingeditor2.areadata.AreaDataListHGSS;
 import editor.buildingeditor2.tileset.BuildTilesetList;
-import editor.buildingeditor2.wb.ABEntry;
-import editor.buildingeditor2.wb.WBBuildingEntry;
-import editor.buildingeditor2.wb.WBBuildingList;
-import editor.buildingeditor2.wb.AB;
+import editor.buildingeditor2.wb.*;
 import editor.game.GameFileSystemB2W2;
 import editor.narc2.Narc;
 import editor.narc2.NarcFile;
@@ -22,11 +20,14 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Dictionary;
 
 /**
  * @author PlatinumMaster
-**/
+ **/
 
 public class BuildHandlerWB {
     private String gameFolderPath = "";
@@ -105,7 +106,6 @@ public class BuildHandlerWB {
                     nAnims = reader.get();
                 }
             };
-            System.out.println(reader.position());
             ArrayList<Integer> fileOffsets = new ArrayList<>();
             int k = 0;
             while (k < 4)
@@ -116,21 +116,21 @@ public class BuildHandlerWB {
                 fileOffsets.add(startABEntrySection + val);
                 k++;
             }
-            System.out.println(reader.position());
-            e.files = new byte[fileOffsets.size()][];
-            System.out.println(fileOffsets.size());
+            e.files = new ModelAnimation[fileOffsets.size()];
             for (int j = 0; j < fileOffsets.size(); j++)
             {
                 reader.position(fileOffsets.get(j));
+                byte[] buf;
                 if (j == fileOffsets.size() - 1)
-                    e.files[j] = new byte[offsets.get(i+1) - fileOffsets.get(j)];
+                    buf = new byte[offsets.get(i+1) - fileOffsets.get(j)];
                 else
-                    e.files[j] = new byte[fileOffsets.get(j+1) - fileOffsets.get(j)];
+                    buf = new byte[fileOffsets.get(j+1) - fileOffsets.get(j)];
                 k = 0;
                 while (reader.position() != fileOffsets.get(j) + e.files.length - 1) {
-                    e.files[j][k] = reader.get();
+                    buf[k] = reader.get();
                     k++;
                 }
+                e.files[j] = new ModelAnimation(buf, j);
             }
             ab.add(e);
         }
@@ -144,9 +144,49 @@ public class BuildHandlerWB {
             else
                 file = new byte[offsets.get(i+1) - offsets.get(i)];
             reader.get(file);
-            ab.addModel(file);
+            ab.addModel(new NitroModel(file));
         }
         return ab;
+    }
+
+    public void loadBuildingData(Path path)
+    {
+        try {
+            byte[] bldFile = Files.readAllBytes(path);
+            buildingList = parseBLD(bldFile);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public WBBuildingList parseBLD(byte[] bld) throws Exception
+    {
+        if (bld == null || bld.length == 0)
+            throw new Exception("Invalid BLD!");
+
+        ByteBuffer reader = ByteBuffer.wrap(bld);
+        reader.order(ByteOrder.LITTLE_ENDIAN);
+        WBBuildingList bldList = new WBBuildingList();
+
+        int count = reader.getInt();
+        for (int i = 0; i < count; i++)
+        {
+            WBBuildingEntry e = new WBBuildingEntry()
+            {
+                {
+                    coords = new FX32[]{ new FX32(reader.getInt()),  new FX32(reader.getInt()), new FX32(reader.getInt()) };
+                    rotation = reader.getShort();
+                    reader.order(ByteOrder.BIG_ENDIAN);
+                    id = reader.getShort(); // GameFreak = trolls
+                    reader.order(ByteOrder.LITTLE_ENDIAN);
+                }
+            };
+            bldList.add(e);
+        }
+
+        return bldList;
     }
 
     public void setGameFolderPath(String path) {

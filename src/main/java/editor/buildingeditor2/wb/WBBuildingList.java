@@ -18,4 +18,14 @@ public class WBBuildingList {
     {
         buildings.remove(index);
     }
+
+    public WBBuildingEntry get(int index)
+    {
+        return buildings.get(index);
+    }
+
+    public int size()
+    {
+        return this.buildings.size();
+    }
 }

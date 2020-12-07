@@ -9,15 +9,28 @@ import java.awt.event.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import editor.buildingeditor2.animations.ModelAnimation;
+import editor.buildingeditor2.buildfile.Build;
+import editor.buildingeditor2.buildfile.BuildFile;
 import editor.buildingeditor2.wb.AB;
+import editor.buildingeditor2.wb.WBBuildingEntry;
+import editor.buildingeditor2.wb.WBBuildingList;
 import editor.handler.MapEditorHandler;
 import editor.nsbtx2.*;
 import net.miginfocom.swing.*;
+import nitroreader.nsbca.NSBCA;
+import nitroreader.nsbca.NSBCAreader;
+import nitroreader.nsbta.NSBTA;
+import nitroreader.nsbta.NSBTAreader;
+import nitroreader.nsbtp.NSBTP;
+import nitroreader.nsbtp.NSBTPreader;
+import nitroreader.shared.ByteReader;
 import renderer.*;
 import utils.Utils;
 
@@ -44,8 +57,6 @@ public class BuildingEditorDialogWB extends JDialog {
         buildHandler.setGameFolderPath(folderPath);
         try {
             buildHandler.loadAllFiles();
-            AB dat = buildHandler.getExtAB(0);
-            nitroDisplayMap.getObjectGL(0).setNsbmdData(dat.getModel(0));
             nitroDisplayMap.requestUpdate();
 
         } catch (Exception ex) {
@@ -80,8 +91,41 @@ public class BuildingEditorDialogWB extends JDialog {
         }
     }
 
-    private void jlBuildFileValueChanged(ListSelectionEvent e) {
-        // TODO add your code here
+    private void jbImportBldActionPerformed(ActionEvent e) {
+        final JFileChooser fc = new JFileChooser();
+        if (handler.getLastMapDirectoryUsed() != null) {
+            fc.setCurrentDirectory(new File(handler.getLastMapDirectoryUsed()));
+        }
+        fc.setFileFilter(new FileNameExtensionFilter("WB Building File (*.bld)", "bld"));
+        fc.setApproveButtonText("Open");
+        fc.setDialogTitle("Open the BLD");
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                handler.setLastMapDirectoryUsed(fc.getSelectedFile().getParent());
+                // Parse Gen V BLD
+                buildHandler.loadBuildingData(fc.getSelectedFile().toPath());
+                updateViewBuildFileList(0);
+                updateViewNitroDisplayMap();
+                nitroDisplayMap.requestUpdate();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "There was an issue while loading the building file.",
+                        "Cannot import bld", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void updateViewBuildFileList(int indexSelected) {
+
+        DefaultListModel listModel = new DefaultListModel();
+        // Temporary until I get things working.
+        for (int i = 0; i < buildHandler.getBuildingList().size(); i++) {
+            WBBuildingEntry e = buildHandler.getBuildingList().get(i);
+            listModel.addElement(buildHandler.getExtAB(0).getModel(i).getName());
+        }
+        jlBuildFile.setModel(listModel);
     }
 
     private void jsBuildIDStateChanged(ChangeEvent e) {
@@ -116,10 +160,6 @@ public class BuildingEditorDialogWB extends JDialog {
         // TODO add your code here
     }
 
-    private void jbImportBldActionPerformed(ActionEvent e) {
-        // TODO add your code here
-    }
-
     private void jbExportBldActionPerformed(ActionEvent e) {
         // TODO add your code here
     }
@@ -132,9 +172,63 @@ public class BuildingEditorDialogWB extends JDialog {
         // TODO add your code here
     }
 
+    private void loadAnimationInNitroDisplay(NitroDisplayGL display, int objectIndex, ModelAnimation anim) {
+        // TODO: Rewrite as switch case
+        if (anim.getAnimationType() == ModelAnimation.TYPE_NSBCA) {
+            NSBCAreader reader = new NSBCAreader(new ByteReader(anim.getData()));
+            display.getObjectGL(objectIndex).setNsbca((NSBCA) reader.readFile());
+            display.requestUpdate();
+        } else if (anim.getAnimationType() == ModelAnimation.TYPE_NSBTA) {
+            NSBTAreader reader = new NSBTAreader(new ByteReader(anim.getData()));
+            display.getObjectGL(objectIndex).setNsbta((NSBTA) reader.readFile());
+            display.requestUpdate();
+        } else if (anim.getAnimationType() == ModelAnimation.TYPE_NSBTP) {
+            NSBTPreader reader = new NSBTPreader(new ByteReader(anim.getData()));
+            display.getObjectGL(objectIndex).setNsbtp((NSBTP) reader.readFile());
+            display.requestUpdate();
+        }
+        /*else if (anim.getAnimationType() == BuildAnimation.TYPE_NSBMA) {
+            NSBMAreader reader = new NSBMAreader(new ByteReader(anim.getData()));
+            nitroDisplayGL1.getHandler().setNsbma((NSBMA) reader.readFile());
+            nitroDisplayGL1.requestUpdate();
+        }*/
+    }
+
+    public void updateViewNitroDisplayMap() {
+        for (int i = 1, size = nitroDisplayMap.getObjectsGL().size(); i < size; i++) {
+            nitroDisplayMap.getObjectsGL().remove(nitroDisplayMap.getObjectsGL().size() - 1);
+        }
+
+        for (int i = 0; i < buildHandler.getBuildingList().size(); i++) {
+            WBBuildingEntry e = buildHandler.getBuildingList().get(i);
+
+            ObjectGL object;
+            try {
+                object = nitroDisplayMap.getObjectGL(1 + i);
+            } catch (Exception ex) {
+                nitroDisplayMap.getObjectsGL().add(new ObjectGL());
+                object = nitroDisplayMap.getObjectGL(1 + i);
+            }
+            try {
+                AB data = buildHandler.getExtAB(0);
+                object.setNsbmdData(data.getModel(i).getData());
+                buildHandler.getBuildingList().get(i).
+                //buildHandler.getBuildingList().getModelsData().get(build.getModeID());
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            object.setX(e.coords[0].toFloat() * 64.0f);
+            object.setY(e.coords[1].toFloat() * 64.0f);
+            object.setZ(e.coords[2].toFloat() * 64.0f);
+
+            nitroDisplayMap.requestUpdate();
+        }
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Joe Mama
         jTabbedPane1 = new JTabbedPane();
         jPanel13 = new JPanel();
         jPanel14 = new JPanel();
@@ -187,13 +281,6 @@ public class BuildingEditorDialogWB extends JDialog {
 
             //======== jPanel13 ========
             {
-                jPanel13.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax
-                . swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDes\u0069gner \u0045valua\u0074ion", javax. swing
-                . border. TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .
-                Font ("D\u0069alog" ,java .awt .Font .BOLD ,12 ), java. awt. Color. red
-                ) ,jPanel13. getBorder( )) ); jPanel13. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override
-                public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062order" .equals (e .getPropertyName (
-                ) )) throw new RuntimeException( ); }} );
                 jPanel13.setLayout(new MigLayout(
                     "insets 0,hidemode 3,gap 5 5",
                     // columns
@@ -274,7 +361,7 @@ public class BuildingEditorDialogWB extends JDialog {
                             public String getElementAt(int i) { return values[i]; }
                         });
                         jlBuildFile.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                        jlBuildFile.addListSelectionListener(e -> jlBuildFileValueChanged(e));
+                        //jlBuildFile.addListSelectionListener(e -> jlBuildFileValueChanged(e));
                         jScrollPane8.setViewportView(jlBuildFile);
                     }
                     jPanel15.add(jScrollPane8, "cell 0 0 1 2");
@@ -433,7 +520,6 @@ public class BuildingEditorDialogWB extends JDialog {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Joe Mama
     private JTabbedPane jTabbedPane1;
     private JPanel jPanel13;
     private JPanel jPanel14;

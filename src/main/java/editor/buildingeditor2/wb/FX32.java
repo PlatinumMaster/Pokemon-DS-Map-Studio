@@ -12,7 +12,7 @@ public class FX32 {
         return val;
     }
 
-    public int toInt()
+    public float toFloat()
     {
         return ((int)Math.floor(val) & 0xFFFF) + (short)((val - Math.floor(val)) * (0x10000));
     }

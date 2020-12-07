@@ -5,7 +5,7 @@ public class AB {
     public short magic;
     public int fileSize;
     private ArrayList<ABEntry> ABEntries;
-    private ArrayList<byte[]> Models;
+    private ArrayList<NitroModel> Models;
 
     public AB()
     {
@@ -23,12 +23,12 @@ public class AB {
         ABEntries.remove(index);
     }
 
-    public void addModel(byte[] model)
+    public void addModel(NitroModel model)
     {
         Models.add(model);
     }
 
-    public byte[] getModel(int index)
+    public NitroModel getModel(int index)
     {
         return this.Models.get(index);
     }
