@@ -92,7 +92,7 @@ public class BuildHandlerWB {
     }
 
     public AB parseAB(byte[] str) throws Exception {
-        Dictionary<Short, Integer> ModelLookupTable = new Hashtable<>();
+        Map<Short, Integer> ModelLookupTable = new HashMap<>();
         ArrayList<Short> IDs = new ArrayList<>();
         ByteBuffer reader = ByteBuffer.wrap(str);
         reader.order(ByteOrder.LITTLE_ENDIAN);

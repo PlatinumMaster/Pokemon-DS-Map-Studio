@@ -108,7 +108,6 @@ public class BuildingEditorDialogWB extends JDialog {
                 buildHandler.loadBuildingData(fc.getSelectedFile().toPath());
                 updateViewBuildFileList(0);
                 updateViewNitroDisplayMap();
-                nitroDisplayMap.requestUpdate();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this,
                         "There was an issue while loading the building file.",
@@ -119,7 +118,7 @@ public class BuildingEditorDialogWB extends JDialog {
     }
 
     private void updateViewBuildFileList(int indexSelected) {
-        DefaultListModel listModel = new DefaultListModel();
+        DefaultComboBoxModel listModel = new DefaultComboBoxModel<>();
         for (int i = 0; i < buildHandler.getBuildingList().size(); i++) {
             WBBuildingEntry e = buildHandler.getBuildingList().get(i);
             int num = currAB.getIDToModel(e.id);
@@ -128,19 +127,17 @@ public class BuildingEditorDialogWB extends JDialog {
             else
                 listModel.addElement(String.format("%d: Unknown", e.id));
         }
-        jlBuildFile.setModel(listModel);
-        jlBuildFile.setSelectedIndex(indexSelected);
+        jcBuildID.setModel(listModel);
+        jcBuildID.setSelectedIndex(indexSelected);
     }
 
-    private void jsBuildIDStateChanged(ChangeEvent e) {
+    private void jcBuildIDStateChanged(ActionEvent e) {
         // Buggy. Look into it!
         if (!shouldUpdate)
             return;
-        WBBuildingEntry en = buildHandler.getBuildingList().get(currEntry);
-        en.id = Short.parseShort(jsBuildID.getValue().toString());
-        buildHandler.replaceEntry(jlBuildFile.getSelectedIndex(), en);
+        buildHandler.getBuildingList().get(currEntry).id = currAB.getModelToID(jcBuildID.getSelectedIndex());
         updateViewNitroDisplayMap();
-        updateViewBuildFileList(jlBuildFile.getSelectedIndex());
+        updateViewBuildFileList(jcBuildID.getSelectedIndex());
     }
 
     private void jbChooseModelBldActionPerformed(ActionEvent e) {
@@ -282,7 +279,7 @@ public class BuildingEditorDialogWB extends JDialog {
         shouldUpdate = false;
         currEntry = jlBuildFile.getSelectedIndex();
         WBBuildingEntry entry = buildHandler.getBuildingList().get(currEntry);
-        jsBuildID.setValue(entry.id);
+        jcBuildID.setSelectedIndex(currEntry);
         jsBuildX.setValue(entry.coords[0].toFloat() * 16f);
         jsBuildZ.setValue(-entry.coords[2].toFloat() * 16f);
         jsBuildY.setValue(entry.coords[1].toFloat() * 16f);
@@ -302,7 +299,7 @@ public class BuildingEditorDialogWB extends JDialog {
         jlBuildFile = new JList<>();
         jPanel16 = new JPanel();
         jLabel13 = new JLabel();
-        jsBuildID = new JSpinner();
+        jcBuildID = new JComboBox();
         jbChooseModelBld = new JButton();
         jLabel14 = new JLabel();
         jsBuildX = new JSpinner();
@@ -437,16 +434,14 @@ public class BuildingEditorDialogWB extends JDialog {
                             "[fill]" +
                             "[fill]" +
                             "[fill]" +
-                            "[fill]"));
+                            "[fill]" +
+                            "[]"));
 
                         //---- jLabel13 ----
                         jLabel13.setText("Building ID:");
                         jPanel16.add(jLabel13, "cell 0 0");
-
-                        //---- jsBuildID ----
-                        jsBuildID.setModel(new SpinnerNumberModel(0, 0, null, 1));
-                        jsBuildID.addChangeListener(e -> jsBuildIDStateChanged(e));
-                        jPanel16.add(jsBuildID, "cell 1 0");
+                        jPanel16.add(jcBuildID, "cell 1 0");
+                        jcBuildID.addActionListener(e -> jcBuildIDStateChanged(e));
 
                         //---- jbChooseModelBld ----
                         jbChooseModelBld.setIcon(new ImageIcon(getClass().getResource("/icons/ReplaceIcon.png")));
@@ -557,7 +552,7 @@ public class BuildingEditorDialogWB extends JDialog {
     private JList<String> jlBuildFile;
     private JPanel jPanel16;
     private JLabel jLabel13;
-    private JSpinner jsBuildID;
+    private JComboBox jcBuildID;
     private JButton jbChooseModelBld;
     private JLabel jLabel14;
     private JSpinner jsBuildX;
