@@ -7,7 +7,7 @@ import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.event.*;
 
-import editor.nsbtx2.*;
+import formats.nsbtx2.*;
 import net.miginfocom.swing.*;
 import editor.buildingeditor2.animations.AddBuildAnimationDialog;
 import editor.buildingeditor2.animations.BuildAnimInfoHGSS;
@@ -18,11 +18,11 @@ import editor.buildingeditor2.areadata.AreaDataHGSS;
 import editor.buildingeditor2.buildfile.Build;
 import editor.buildingeditor2.buildfile.BuildFile;
 import editor.handler.MapEditorHandler;
-import editor.nsbtx2.Nsbtx2;
-import editor.nsbtx2.NsbtxLoader2;
-import editor.nsbtx2.NsbtxPalette;
-import editor.nsbtx2.NsbtxTexture;
-import editor.nsbtx2.NsbtxWriter;
+import formats.nsbtx2.Nsbtx2;
+import formats.nsbtx2.NsbtxLoader2;
+import formats.nsbtx2.NsbtxPalette;
+import formats.nsbtx2.NsbtxTexture;
+import formats.nsbtx2.NsbtxWriter;
 
 import java.awt.Color;
 
@@ -1134,7 +1134,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
         if (buildPropertiesEnabled.value) {
             try {
                 Build build = handler.getBuildings().getBuilds().get(jlBuildFile.getSelectedIndex());
-                build.setX((Float) jsBuildX.getValue());
+                build.setX(((Double) jsBuildX.getValue()).floatValue());
 
                 updateViewNitroDisplayMapBuildProperties(jlBuildFile.getSelectedIndex());
             } catch (Exception ex) {
@@ -1147,7 +1147,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
         if (buildPropertiesEnabled.value) {
             try {
                 Build build = handler.getBuildings().getBuilds().get(jlBuildFile.getSelectedIndex());
-                build.setY((Float) jsBuildY.getValue());
+                build.setY(((Double) jsBuildY.getValue()).floatValue());
 
                 updateViewNitroDisplayMapBuildProperties(jlBuildFile.getSelectedIndex());
             } catch (Exception ex) {
@@ -1162,7 +1162,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
             try {
                 Build build = handler.getBuildings().getBuilds().get(jlBuildFile.getSelectedIndex());
 
-                build.setZ((Float) jsBuildZ.getValue());
+                build.setZ(((Double) jsBuildZ.getValue()).floatValue());
 
                 updateViewNitroDisplayMapBuildProperties(jlBuildFile.getSelectedIndex());
             } catch (Exception ex) {
@@ -1175,7 +1175,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
         if (buildPropertiesEnabled.value) {
             try {
                 Build build = handler.getBuildings().getBuilds().get(jlBuildFile.getSelectedIndex());
-                build.setScaleX((Float) jsBuildScaleX.getValue());
+                build.setScaleX(((Double) jsBuildScaleX.getValue()).floatValue());
 
                 updateViewNitroDisplayMapBuildProperties(jlBuildFile.getSelectedIndex());
             } catch (Exception ex) {
@@ -1188,7 +1188,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
         if (buildPropertiesEnabled.value) {
             try {
                 Build build = handler.getBuildings().getBuilds().get(jlBuildFile.getSelectedIndex());
-                build.setScaleY((Float) jsBuildScaleY.getValue());
+                build.setScaleY(((Double) jsBuildScaleY.getValue()).floatValue());
 
                 updateViewNitroDisplayMapBuildProperties(jlBuildFile.getSelectedIndex());
             } catch (Exception ex) {
@@ -1201,7 +1201,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
         if (buildPropertiesEnabled.value) {
             try {
                 Build build = handler.getBuildings().getBuilds().get(jlBuildFile.getSelectedIndex());
-                build.setScaleZ((Float) jsBuildScaleZ.getValue());
+                build.setScaleZ(((Double) jsBuildScaleZ.getValue()).floatValue());
 
                 updateViewNitroDisplayMapBuildProperties(jlBuildFile.getSelectedIndex());
             } catch (Exception ex) {
@@ -1944,6 +1944,33 @@ public class BuildingEditorDialogHGSS extends JDialog {
         }*/
     }
 
+
+    public void tryLoadBuildFile() {
+        try {
+            String filePath = handler.getMapMatrix().getFilePathWithCoords(handler.getMapMatrix().getMatrix(),
+                    new File(handler.getMapMatrix().filePath).getParent(),
+                    new File(handler.getMapMatrix().filePath).getName(),
+                    handler.getMapSelected(), "nsbmd");
+
+            File file = new File(filePath);
+            if (file.exists()) {
+                byte[] mapData = Files.readAllBytes(file.toPath());
+                nitroDisplayMap.getObjectGL(0).setNsbmdData(mapData);
+                nitroDisplayMap.requestUpdate();
+            } else {
+                File[] files = findFilesWithExtension(new File(handler.getMapMatrix().filePath).getParent(), "nsbmd");
+                if (files.length > 0) {
+                    byte[] mapData = Files.readAllBytes(files[0].toPath());
+                    nitroDisplayMap.getObjectGL(0).setNsbmdData(mapData);
+                    nitroDisplayMap.requestUpdate();
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /*
     public void tryLoadBuildFile() {
         try {
             File[] files = findFilesWithExtension(new File(handler.getMapMatrix().filePath).getParent(), "nsbmd");
@@ -1957,7 +1984,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
+    }*/
 
     public void tryLoadMapAnimFile() {
         try {
@@ -2124,7 +2151,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
         jPanel20 = new JPanel();
         nitroDisplayMapAnims = new NitroDisplayGL();
         jbOpenMap1 = new JButton();
-        jLabel29 = new JLabel();
+        label1 = new JLabel();
         jPanel21 = new JPanel();
         jLabel7 = new JLabel();
         jScrollPane9 = new JScrollPane();
@@ -2201,7 +2228,6 @@ public class BuildingEditorDialogHGSS extends JDialog {
         jbAddBuildBld = new JButton();
         jbRemoveBld = new JButton();
         panel1 = new JPanel();
-        hSpacer1 = new JPanel(null);
         jLabel21 = new JLabel();
         jcbModelsSelected = new JComboBox<>();
         jbSaveAll = new JButton();
@@ -2211,7 +2237,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Building Editor (Experimental)");
         setModal(true);
-        var contentPane = getContentPane();
+        Container contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             "insets 0,hidemode 3,gap 5 5",
             // columns
@@ -2226,7 +2252,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel3 ========
             {
                 jPanel3.setLayout(new MigLayout(
-                    "insets 0,hidemode 3,gap 5 5",
+                    "insets 5,hidemode 3,gap 5 5",
                     // columns
                     "[grow,fill]" +
                     "[grow,fill]",
@@ -2237,10 +2263,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel1.setBorder(new TitledBorder("Building Selector (build_model.narc)"));
                     jPanel1.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 5,hidemode 3,gap 5 5",
                         // columns
-                        "[grow,fill]" +
-                        "[fill]" +
+                        "[462,grow,fill]" +
+                        "[164,fill]" +
                         "[fill]",
                         // rows
                         "[fill]" +
@@ -2260,7 +2286,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         nitroDisplayGL.setLayout(nitroDisplayGLLayout);
                         nitroDisplayGLLayout.setHorizontalGroup(
                             nitroDisplayGLLayout.createParallelGroup()
-                                .addGap(0, 510, Short.MAX_VALUE)
+                                .addGap(0, 469, Short.MAX_VALUE)
                         );
                         nitroDisplayGLLayout.setVerticalGroup(
                             nitroDisplayGLLayout.createParallelGroup()
@@ -2362,9 +2388,9 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     {
                         jPanel2.setBorder(new TitledBorder("Selected Building Properties (build_model_matshp.dat)"));
                         jPanel2.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
+                            "insets 5,hidemode 3,gap 5 5",
                             // columns
-                            "[grow,fill]" +
+                            "[129,grow,fill]" +
                             "[fill]",
                             // rows
                             "[fill]" +
@@ -2462,9 +2488,9 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     {
                         jPanel8.setBorder(new TitledBorder("Selected Building Animations (bm_anime_list.narc)"));
                         jPanel8.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
+                            "insets 05 5 5 5,hidemode 3,gap 5 5",
                             // columns
-                            "[grow,fill]" +
+                            "[156,grow,fill]" +
                             "[fill]",
                             // rows
                             "[fill]" +
@@ -2512,7 +2538,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbAddAnimToBuild.addActionListener(e -> jbAddAnimToBuildActionPerformed(e));
                             panel5.add(jbAddAnimToBuild, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0), 0, 0));
+                                new Insets(0, 0, 5, 0), 0, 0));
 
                             //---- jbReplaceAnimToBuild ----
                             jbReplaceAnimToBuild.setIcon(new ImageIcon(getClass().getResource("/icons/ReplaceIcon.png")));
@@ -2521,7 +2547,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbReplaceAnimToBuild.addActionListener(e -> jbReplaceAnimToBuildActionPerformed(e));
                             panel5.add(jbReplaceAnimToBuild, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
                                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0), 0, 0));
+                                new Insets(0, 0, 5, 0), 0, 0));
 
                             //---- jbRemoveAnimToBuild ----
                             jbRemoveAnimToBuild.setIcon(new ImageIcon(getClass().getResource("/icons/RemoveIcon.png")));
@@ -2530,7 +2556,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                             jbRemoveAnimToBuild.addActionListener(e -> jbRemoveAnimToBuildActionPerformed(e));
                             panel5.add(jbRemoveAnimToBuild, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
                                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0), 0, 0));
+                                new Insets(0, 0, 5, 0), 0, 0));
 
                             //---- jbPlay ----
                             jbPlay.setIcon(new ImageIcon(getClass().getResource("/icons/AnimationIcon.png")));
@@ -2549,7 +2575,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                                 "hidemode 3",
                                 // columns
                                 "[fill]" +
-                                "[grow,fill]" +
+                                "[112,grow,fill]" +
                                 "[fill]" +
                                 "[grow,fill]",
                                 // rows
@@ -2637,7 +2663,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel4 ========
             {
                 jPanel4.setLayout(new MigLayout(
-                    "insets 0,hidemode 3,gap 5 5",
+                    "insets 5,hidemode 3,gap 5 5",
                     // columns
                     "[grow,fill]" +
                     "[grow,fill]" +
@@ -2650,9 +2676,9 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel5.setBorder(new TitledBorder("Area Data Selector (area_data.narc)"));
                     jPanel5.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 5,hidemode 3,gap 5 5",
                         // columns
-                        "[grow,fill]" +
+                        "[159,grow,fill]" +
                         "[fill]",
                         // rows
                         "[fill]" +
@@ -2718,10 +2744,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel6.setBorder(new TitledBorder("Area Data Properties"));
                     jPanel6.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 5,hidemode 3,gap 5 5",
                         // columns
                         "[fill]" +
-                        "[grow,fill]" +
+                        "[99,grow,fill]" +
                         "[fill]",
                         // rows
                         "[fill]" +
@@ -2792,9 +2818,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel20.setBorder(new TitledBorder("Map Animations Display"));
                     jPanel20.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 5,hidemode 3,gap 5 5",
                         // columns
-                        "[grow,fill]",
+                        "[475,grow,fill]" +
+                        "[fill]",
                         // rows
                         "[fill]" +
                         "[fill]" +
@@ -2815,17 +2842,17 @@ public class BuildingEditorDialogHGSS extends JDialog {
                                 .addGap(0, 0, Short.MAX_VALUE)
                         );
                     }
-                    jPanel20.add(nitroDisplayMapAnims, "cell 0 2");
+                    jPanel20.add(nitroDisplayMapAnims, "cell 0 2 2 1");
 
                     //---- jbOpenMap1 ----
                     jbOpenMap1.setIcon(new ImageIcon(getClass().getResource("/icons/ImportTileIcon.png")));
                     jbOpenMap1.setText("Open Map");
                     jbOpenMap1.addActionListener(e -> jbOpenMap1ActionPerformed(e));
-                    jPanel20.add(jbOpenMap1, "cell 0 0");
+                    jPanel20.add(jbOpenMap1, "cell 0 0,alignx left,growx 0");
 
-                    //---- jLabel29 ----
-                    jLabel29.setText("*[Note: This map is used as a visual help for viewing the map animations]");
-                    jPanel20.add(jLabel29, "cell 0 1");
+                    //---- label1 ----
+                    label1.setText("*[Note: This map is used as a visual help for viewing the map animations]");
+                    jPanel20.add(label1, "cell 0 1 2 1");
                 }
                 jPanel4.add(jPanel20, "cell 2 0 1 2");
 
@@ -2833,9 +2860,9 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel21.setBorder(new TitledBorder("Map Animations (Dynamic Textures)"));
                     jPanel21.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 5,hidemode 3,gap 5 5",
                         // columns
-                        "[grow,fill]" +
+                        "[181,grow,fill]" +
                         "[fill]",
                         // rows
                         "[fill]" +
@@ -2843,7 +2870,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         "[fill]" +
                         "[fill]" +
                         "[fill]" +
-                        "[fill]"));
+                        "[grow,fill]"));
 
                     //---- jLabel7 ----
                     jLabel7.setIcon(new ImageIcon(getClass().getResource("/icons/AnimationIcon.png")));
@@ -2904,7 +2931,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     jbPlayMapAnimation.setText("Play Animation");
                     jbPlayMapAnimation.setHorizontalAlignment(SwingConstants.LEFT);
                     jbPlayMapAnimation.addActionListener(e -> jbPlayMapAnimationActionPerformed(e));
-                    jPanel21.add(jbPlayMapAnimation, "cell 1 5");
+                    jPanel21.add(jbPlayMapAnimation, "cell 1 5,aligny top,growy 0");
                 }
                 jPanel4.add(jPanel21, "cell 1 1");
             }
@@ -2913,7 +2940,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel7 ========
             {
                 jPanel7.setLayout(new MigLayout(
-                    "insets 0,hidemode 3,gap 5 5",
+                    "insets 05 5 5 5,hidemode 3,gap 5 5",
                     // columns
                     "[grow,fill]" +
                     "[grow,fill]",
@@ -2924,10 +2951,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel10.setBorder(new TitledBorder("Building Tileset Selector (areabm_texset.narc)"));
                     jPanel10.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 5,hidemode 3,gap 5 5",
                         // columns
-                        "[grow,fill]" +
-                        "[grow,fill]",
+                        "[368,fill]" +
+                        "[353,grow,fill]",
                         // rows
                         "[fill]" +
                         "[grow,fill]"));
@@ -3021,10 +3048,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel11.setBorder(new TitledBorder("Building Tileset Properties (area_build.narc)"));
                     jPanel11.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 05 5 5 5,hidemode 3,gap 5 5",
                         // columns
-                        "[grow,fill]" +
-                        "[grow,fill]",
+                        "[196,grow,fill]" +
+                        "[340,grow,fill]",
                         // rows
                         "[fill]" +
                         "[fill]" +
@@ -3133,7 +3160,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                         );
                         nitroDisplayAreaDataLayout.setVerticalGroup(
                             nitroDisplayAreaDataLayout.createParallelGroup()
-                                .addGap(0, 384, Short.MAX_VALUE)
+                                .addGap(0, 300, Short.MAX_VALUE)
                         );
                     }
                     jPanel11.add(nitroDisplayAreaData, "cell 1 2");
@@ -3145,7 +3172,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel9 ========
             {
                 jPanel9.setLayout(new MigLayout(
-                    "insets 0,hidemode 3",
+                    "insets 5,hidemode 3",
                     // columns
                     "[fill]",
                     // rows
@@ -3155,7 +3182,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel12.setBorder(new TitledBorder("Selected Building Animations (bm_anime.narc)"));
                     jPanel12.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 5,hidemode 3,gap 5 5",
                         // columns
                         "[fill]" +
                         "[fill]",
@@ -3243,7 +3270,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
             //======== jPanel13 ========
             {
                 jPanel13.setLayout(new MigLayout(
-                    "insets 0,hidemode 3,gap 5 5",
+                    "insets 5,hidemode 3,gap 5 5",
                     // columns
                     "[grow,fill]" +
                     "[grow,fill]",
@@ -3254,10 +3281,10 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel14.setBorder(new TitledBorder("Map Display"));
                     jPanel14.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 5,hidemode 3,gap 5 5",
                         // columns
                         "[fill]" +
-                        "[grow,fill]",
+                        "[528,grow,fill]",
                         // rows
                         "[fill]" +
                         "[grow,fill]"));
@@ -3295,9 +3322,9 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 {
                     jPanel15.setBorder(new TitledBorder("Building Editor (*.bld)"));
                     jPanel15.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 5,hidemode 3,gap 5 5",
                         // columns
-                        "[grow,fill]" +
+                        "[196,grow,fill]" +
                         "[fill]",
                         // rows
                         "[fill]" +
@@ -3328,12 +3355,12 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     {
                         jPanel16.setBorder(new TitledBorder("Selected Building"));
                         jPanel16.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
+                            "insets 5,hidemode 3,gap 5 5",
                             // columns
                             "[fill]" +
-                            "[grow,fill]" +
+                            "[112,grow,fill]" +
                             "[fill]" +
-                            "[grow,fill]",
+                            "[99,grow,fill]",
                             // rows
                             "[fill]" +
                             "[fill]" +
@@ -3425,7 +3452,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
                     //======== jPanel17 ========
                     {
                         jPanel17.setBorder(new TitledBorder("Building File"));
-                        jPanel17.setLayout(new GridLayout(2, 2));
+                        jPanel17.setLayout(new GridLayout(2, 2, 5, 5));
 
                         //======== jPanel18 ========
                         {
@@ -3475,20 +3502,19 @@ public class BuildingEditorDialogHGSS extends JDialog {
 
         //======== panel1 ========
         {
-            panel1.setLayout(new GridBagLayout());
-            ((GridBagLayout)panel1.getLayout()).columnWidths = new int[] {0, 0, 0, 0, 0, 0};
-            ((GridBagLayout)panel1.getLayout()).rowHeights = new int[] {0, 0};
-            ((GridBagLayout)panel1.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
-            ((GridBagLayout)panel1.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
-            panel1.add(hSpacer1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 5), 0, 0));
+            panel1.setLayout(new MigLayout(
+                "insets 0,hidemode 3,gap 5 5",
+                // columns
+                "[364:n,grow,fill]" +
+                "[600,fill]" +
+                "[fill]" +
+                "[fill]",
+                // rows
+                "[fill]"));
 
             //---- jLabel21 ----
             jLabel21.setText("Models Selected:");
-            panel1.add(jLabel21, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 5), 0, 0));
+            panel1.add(jLabel21, "");
 
             //---- jcbModelsSelected ----
             jcbModelsSelected.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -3496,30 +3522,25 @@ public class BuildingEditorDialogHGSS extends JDialog {
                 "Indoor Models"
             }));
             jcbModelsSelected.addActionListener(e -> jcbModelsSelectedActionPerformed(e));
-            panel1.add(jcbModelsSelected, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 5), 0, 0));
+            panel1.add(jcbModelsSelected, "cell 0 0");
 
             //---- jbSaveAll ----
             jbSaveAll.setText("Save All");
             jbSaveAll.setMaximumSize(null);
             jbSaveAll.setMinimumSize(null);
             jbSaveAll.setPreferredSize(new Dimension(100, 30));
+            jbSaveAll.setIcon(new ImageIcon(getClass().getResource("/icons/saveMapIconSmall.png")));
             jbSaveAll.addActionListener(e -> jbSaveAllActionPerformed(e));
-            panel1.add(jbSaveAll, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 5), 0, 0));
+            panel1.add(jbSaveAll, "cell 2 0");
 
             //---- jbCancel ----
             jbCancel.setText("Close");
             jbCancel.setPreferredSize(new Dimension(100, 30));
             jbCancel.addActionListener(e -> jbCancelActionPerformed(e));
-            panel1.add(jbCancel, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
+            panel1.add(jbCancel, "cell 3 0");
         }
-        contentPane.add(panel1, "cell 0 1");
-        pack();
+        contentPane.add(panel1, "cell 0 1,gapx 5 5,gapy 5 5");
+        setSize(1200, 690);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -3594,7 +3615,7 @@ public class BuildingEditorDialogHGSS extends JDialog {
     private JPanel jPanel20;
     private NitroDisplayGL nitroDisplayMapAnims;
     private JButton jbOpenMap1;
-    private JLabel jLabel29;
+    private JLabel label1;
     private JPanel jPanel21;
     private JLabel jLabel7;
     private JScrollPane jScrollPane9;
@@ -3671,7 +3692,6 @@ public class BuildingEditorDialogHGSS extends JDialog {
     private JButton jbAddBuildBld;
     private JButton jbRemoveBld;
     private JPanel panel1;
-    private JPanel hSpacer1;
     private JLabel jLabel21;
     private JComboBox<String> jcbModelsSelected;
     private JButton jbSaveAll;

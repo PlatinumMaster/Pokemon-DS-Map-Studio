@@ -1,6 +1,5 @@
 package editor.buildingeditor2;
 
-import editor.buildingeditor2.animations.BuildAnimations;
 import editor.buildingeditor2.animations.MapAnimations;
 import editor.buildingeditor2.animations.ModelAnimation;
 import editor.buildingeditor2.areabuild.AreaBuildList;
@@ -11,6 +10,11 @@ import editor.game.GameFileSystemB2W2;
 import editor.narc2.Narc;
 import editor.narc2.NarcFile;
 import editor.narc2.NarcIO;
+import editor.nsbtx.Nsbtx;
+import editor.nsbtx2.Nsbtx2;
+import editor.nsbtx2.NsbtxLoader2;
+import editor.nsbtx2.NsbtxPalette;
+import editor.nsbtx2.NsbtxTexture;
 import utils.BinaryReader;
 
 import java.io.ByteArrayInputStream;
@@ -22,8 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Dictionary;
+import java.util.*;
 
 /**
  * @author PlatinumMaster
@@ -35,12 +38,17 @@ public class BuildHandlerWB {
     private WBBuildingList buildingList;
     private ArrayList<AB> extAB;
     private ArrayList<AB> intAB;
+    private ArrayList<Nsbtx2> extABTextures;
+    private ArrayList<Nsbtx2> intABTextures;
 
     public BuildHandlerWB(String gameFolderPath) {
         this.gameFolderPath = gameFolderPath;
         this.gameFileSystem = new GameFileSystemB2W2();
         extAB = new ArrayList<>();
         intAB = new ArrayList<>();
+        extABTextures = new ArrayList<>();
+        intABTextures = new ArrayList<>();
+
     }
 
     public WBBuildingList getBuildingList()
@@ -68,13 +76,29 @@ public class BuildHandlerWB {
                 extAB.add(parseAB(n.getData()));
             for (NarcFile n : intBuildingData.getRoot().getFiles())
                 intAB.add(parseAB(n.getData()));
+            for (NarcFile n : extBuildingTextures.getRoot().getFiles())
+                extABTextures.add(NsbtxLoader2.loadNsbtx(n.getData()));
+            for (NarcFile n : intBuildingTextures.getRoot().getFiles())
+                intABTextures.add(NsbtxLoader2.loadNsbtx(n.getData()));
+
         } catch (Exception ex) {
             throw ex;
         }
     }
 
+    public Nsbtx2 getExtABTextures(int num)
+    {
+        return extABTextures.get(num);
+    }
+
+    public Nsbtx2 getIntABTextures(int num)
+    {
+        return intABTextures.get(num);
+    }
 
     public AB parseAB(byte[] str) throws Exception {
+        Dictionary<Short, Integer> ModelLookupTable = new Hashtable<>();
+        ArrayList<Short> IDs = new ArrayList<>();
         ByteBuffer reader = ByteBuffer.wrap(str);
         reader.order(ByteOrder.LITTLE_ENDIAN);
         AB ab = new AB();
@@ -106,6 +130,7 @@ public class BuildHandlerWB {
                     nAnims = reader.get();
                 }
             };
+            IDs.add(e.id);
             ArrayList<Integer> fileOffsets = new ArrayList<>();
             int k = 0;
             while (k < 4)
@@ -137,6 +162,7 @@ public class BuildHandlerWB {
 
         for (int i = nFiles / 2; i < nFiles; i++)
         {
+            ModelLookupTable.put(IDs.get(nFiles - i - 1), nFiles - i - 1);
             reader.position(offsets.get(i));
             byte[] file;
             if (i == nFiles - 1)
@@ -146,6 +172,7 @@ public class BuildHandlerWB {
             reader.get(file);
             ab.addModel(new NitroModel(file));
         }
+        ab.setIDLookupTable(ModelLookupTable);
         return ab;
     }
 
@@ -177,6 +204,7 @@ public class BuildHandlerWB {
             {
                 {
                     coords = new FX32[]{ new FX32(reader.getInt()),  new FX32(reader.getInt()), new FX32(reader.getInt()) };
+                    System.out.println(coords[2].Value());
                     rotation = reader.getShort();
                     reader.order(ByteOrder.BIG_ENDIAN);
                     id = reader.getShort(); // GameFreak = trolls
@@ -187,6 +215,24 @@ public class BuildHandlerWB {
         }
 
         return bldList;
+    }
+
+    public byte[] exportBLD(WBBuildingList l)
+    {
+        ByteBuffer buf = ByteBuffer.allocate(0x4 + (0x10 * l.size()));
+        buf.order(ByteOrder.LITTLE_ENDIAN);
+        buf.putInt(l.size()); // Write the number of entries
+        for (int i = 0; i < l.size(); i++)
+        {
+            buf.putInt(getBuildingList().get(i).coords[0].Value());
+            buf.putInt(getBuildingList().get(i).coords[1].Value());
+            buf.putInt(getBuildingList().get(i).coords[2].Value());
+            buf.putShort(getBuildingList().get(i).rotation);
+            buf.order(ByteOrder.BIG_ENDIAN);
+            buf.putShort(getBuildingList().get(i).id);
+            buf.order(ByteOrder.LITTLE_ENDIAN);
+        }
+        return buf.array();
     }
 
     public void setGameFolderPath(String path) {

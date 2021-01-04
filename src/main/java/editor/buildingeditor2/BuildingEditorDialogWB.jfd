@@ -116,7 +116,7 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JSpinner" ) {
 								name: "jsBuildX"
-								"model": new javax.swing.SpinnerNumberModel( 0.0f, -16.0f, 15.0f, 1.0f )
+								"model": new javax.swing.SpinnerNumberModel( 0.0f, -256.0f, 256.0f, 8.0f )
 								addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "jsBuildXStateChanged", true ) )
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 1 1"
@@ -130,7 +130,10 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JSpinner" ) {
 								name: "jsBuildY"
-								"model": new javax.swing.SpinnerNumberModel( 0.0f, -16.0f, 15.0f, 1.0f )
+								"model": new javax.swing.SpinnerNumberModel {
+									stepSize: 8.0f
+									value: 0.0f
+								}
 								addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "jsBuildYStateChanged", true ) )
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 1 2"
@@ -144,52 +147,13 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JSpinner" ) {
 								name: "jsBuildZ"
-								"model": new javax.swing.SpinnerNumberModel( 0.0f, -16.0f, 15.0f, 1.0f )
+								"model": new javax.swing.SpinnerNumberModel {
+									stepSize: 8.0f
+									value: 0.0f
+								}
 								addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "jsBuildZStateChanged", true ) )
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 1 3"
-							} )
-							add( new FormComponent( "javax.swing.JLabel" ) {
-								name: "jLabel17"
-								"foreground": new java.awt.Color( 204, 0, 0, 255 )
-								"text": "Scale X: "
-							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-								"value": "cell 2 1"
-							} )
-							add( new FormComponent( "javax.swing.JSpinner" ) {
-								name: "jsBuildScaleX"
-								"model": new javax.swing.SpinnerNumberModel( 0.0f, 0.0f, 15.0f, 1.0f )
-								addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "jsBuildScaleXStateChanged", true ) )
-							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-								"value": "cell 3 1"
-							} )
-							add( new FormComponent( "javax.swing.JSpinner" ) {
-								name: "jsBuildScaleY"
-								"model": new javax.swing.SpinnerNumberModel( 0.0f, 0.0f, 15.0f, 1.0f )
-								addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "jsBuildScaleYStateChanged", true ) )
-							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-								"value": "cell 3 2"
-							} )
-							add( new FormComponent( "javax.swing.JLabel" ) {
-								name: "jLabel18"
-								"foreground": new java.awt.Color( 0, 153, 0, 255 )
-								"text": "Scale Y: "
-							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-								"value": "cell 2 2"
-							} )
-							add( new FormComponent( "javax.swing.JLabel" ) {
-								name: "jLabel19"
-								"foreground": new java.awt.Color( 0, 0, 204, 255 )
-								"text": "Scale Z: "
-							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-								"value": "cell 2 3"
-							} )
-							add( new FormComponent( "javax.swing.JSpinner" ) {
-								name: "jsBuildScaleZ"
-								"model": new javax.swing.SpinnerNumberModel( 0.0f, 0.0f, 15.0f, 1.0f )
-								addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "jsBuildScaleZStateChanged", true ) )
-							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-								"value": "cell 3 3"
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel20"
@@ -264,4 +228,3 @@ new FormModel {
 		} )
 	}
 }
-

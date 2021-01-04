@@ -1,24 +1,33 @@
 package editor.buildingeditor2.wb;
 
 public class FX32 {
-    private double val;
+    private int val;
+
     public FX32(int num)
     {
-        val = (short) (num >> 16) + (short)(num & 0x10000);
+        this.val = num;
     }
 
-    public double Value()
+    public int Value()
     {
         return val;
     }
 
     public float toFloat()
     {
-        return ((int)Math.floor(val) & 0xFFFF) + (short)((val - Math.floor(val)) * (0x10000));
+        return ((short)(val >> 0x10)) + ((val & 0xFFFF) / 65536f);
     }
 
-    public void setValue(double val)
+    public void setVal(int val)
     {
         this.val = val;
+    }
+
+    public static int TryParse(float val)
+    {
+        // (uint16_t)((n - floor(n)) * 0x10000) + floor(n)
+        double frac = val - Math.floor(val);
+        int integer = ((int)Math.floor(val)) << 0x10;
+        return (int)(frac * 0x10000) + integer;
     }
 }
