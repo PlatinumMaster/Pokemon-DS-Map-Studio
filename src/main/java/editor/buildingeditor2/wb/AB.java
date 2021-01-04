@@ -38,7 +38,7 @@ public class AB {
     public int getIDToModel(short ID)
     {
         if (IDLookupTable.get(ID) == null)
-            return 0;
+            return -1;
         return IDLookupTable.get(ID);
     }
 

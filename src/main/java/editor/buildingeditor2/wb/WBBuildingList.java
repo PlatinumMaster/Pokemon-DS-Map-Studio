@@ -14,6 +14,12 @@ public class WBBuildingList {
         buildings.add(newEntry);
     }
 
+    public void add(int index, WBBuildingEntry newEntry)
+    {
+        buildings.add(index, newEntry);
+    }
+
+
     public void remove(int index)
     {
         buildings.remove(index);

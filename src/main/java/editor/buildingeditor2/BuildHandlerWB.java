@@ -44,6 +44,13 @@ public class BuildHandlerWB {
         return this.buildingList;
     }
 
+    public void replaceEntry(int index, WBBuildingEntry e)
+    {
+        this.buildingList.remove(index);
+        this.buildingList.add(index, e);
+    }
+
+
     public AB getExtAB(int number)
     {
         return this.extAB.get(number);

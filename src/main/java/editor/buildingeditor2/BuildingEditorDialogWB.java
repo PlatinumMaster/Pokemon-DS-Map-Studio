@@ -21,14 +21,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import editor.buildingeditor2.animations.ModelAnimation;
 import editor.buildingeditor2.buildfile.Build;
 import editor.buildingeditor2.buildfile.BuildFile;
-import editor.buildingeditor2.wb.AB;
-import editor.buildingeditor2.wb.FX32;
-import editor.buildingeditor2.wb.WBBuildingEntry;
-import editor.buildingeditor2.wb.WBBuildingList;
+import editor.buildingeditor2.wb.*;
 import editor.handler.MapEditorHandler;
 import formats.nsbtx2.*;
 import net.miginfocom.swing.*;
 import nitroreader.nsbca.NSBCAreader;
+import nitroreader.nsbmd.NSBMD;
 import nitroreader.nsbta.NSBTA;
 import nitroreader.nsbta.NSBTAreader;
 import nitroreader.nsbtp.NSBTP;
@@ -45,6 +43,8 @@ public class BuildingEditorDialogWB extends JDialog {
     private BuildHandlerWB buildHandler;
     private JList<String> jlBuildModel;
     private AB currAB;
+    private int currEntry;
+    private boolean shouldUpdate;
 
     public BuildingEditorDialogWB(Window owner) {
         super(owner);
@@ -122,13 +122,25 @@ public class BuildingEditorDialogWB extends JDialog {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < buildHandler.getBuildingList().size(); i++) {
             WBBuildingEntry e = buildHandler.getBuildingList().get(i);
-            listModel.addElement(currAB.getModel(currAB.getIDToModel(e.id)).getName());
+            int num = currAB.getIDToModel(e.id);
+            if (num != -1)
+                listModel.addElement(String.format("%d: %s", e.id, currAB.getModel(num).getName()));
+            else
+                listModel.addElement(String.format("%d: Unknown", e.id));
         }
         jlBuildFile.setModel(listModel);
+        jlBuildFile.setSelectedIndex(indexSelected);
     }
 
     private void jsBuildIDStateChanged(ChangeEvent e) {
-        // TODO add your code here
+        // Buggy. Look into it!
+        if (!shouldUpdate)
+            return;
+        WBBuildingEntry en = buildHandler.getBuildingList().get(currEntry);
+        en.id = Short.parseShort(jsBuildID.getValue().toString());
+        buildHandler.replaceEntry(jlBuildFile.getSelectedIndex(), en);
+        updateViewNitroDisplayMap();
+        updateViewBuildFileList(jlBuildFile.getSelectedIndex());
     }
 
     private void jbChooseModelBldActionPerformed(ActionEvent e) {
@@ -136,21 +148,27 @@ public class BuildingEditorDialogWB extends JDialog {
     }
 
     private void jsBuildXStateChanged(ChangeEvent e) {
-        ObjectGL object = nitroDisplayMap.getObjectGL(1 + jlBuildFile.getSelectedIndex());
-        object.setX(Float.parseFloat(jsBuildX.getValue().toString()));
-        nitroDisplayMap.requestUpdate();
+        if (!shouldUpdate)
+            return;
+        float val = Float.parseFloat(jsBuildX.getValue().toString());
+        buildHandler.getBuildingList().get(currEntry).coords[0].setVal(FX32.TryParse(val / 16f));
+        updateViewNitroDisplayMap();
     }
 
     private void jsBuildYStateChanged(ChangeEvent e) {
-        ObjectGL object = nitroDisplayMap.getObjectGL(1 + jlBuildFile.getSelectedIndex());
-        object.setY(Float.parseFloat(jsBuildY.getValue().toString()));
-        nitroDisplayMap.requestUpdate();
+        if (!shouldUpdate)
+            return;
+        float val = Float.parseFloat(jsBuildY.getValue().toString());
+        buildHandler.getBuildingList().get(currEntry).coords[1].setVal(FX32.TryParse(val / 16f));
+        updateViewNitroDisplayMap();
     }
 
     private void jsBuildZStateChanged(ChangeEvent e) {
-        ObjectGL object = nitroDisplayMap.getObjectGL(1 + jlBuildFile.getSelectedIndex());
-        object.setZ(Float.parseFloat(jsBuildZ.getValue().toString()));
-        nitroDisplayMap.requestUpdate();
+        if (!shouldUpdate)
+            return;
+        float val = Float.parseFloat(jsBuildY.getValue().toString());
+        buildHandler.getBuildingList().get(currEntry).coords[2].setVal(FX32.TryParse(val / 16f));
+        updateViewNitroDisplayMap();
     }
 
     private void jbExportBldActionPerformed(ActionEvent e) {
@@ -200,36 +218,28 @@ public class BuildingEditorDialogWB extends JDialog {
     }
 
     private void jbAddBuildBldActionPerformed(ActionEvent e) {
-        // TODO add your code here
+        DefaultListModel m = (DefaultListModel) jlBuildFile.getModel();
+        NitroModel model = currAB.getModel(currAB.getIDToModel((short) 0));
+        m.addElement(String.format("%d: %s", 0, model.getName()));
+        jlBuildFile.setModel(m);
+        buildHandler.getBuildingList().add(new WBBuildingEntry(){
+            {
+                coords = new FX32[]{new FX32(0x0), new FX32(0x0), new FX32(0x0)};
+                id = 0x0;
+                rotation = 0x0;
+            }
+        });
+        updateViewNitroDisplayMap();
+        updateViewBuildFileList(buildHandler.getBuildingList().size());
     }
 
     private void jbRemoveBldActionPerformed(ActionEvent e) {
-        // TODO add your code here
-    }
-
-    private void loadAnimationInNitroDisplay(NitroDisplayGL display, int objectIndex, ModelAnimation anim) {
-        Object reader;
-        switch (anim.getAnimationType())
-        {
-            case ModelAnimation.TYPE_NSBCA:
-                reader = new NSBCAreader(new ByteReader(anim.getData()));
-                display.getObjectGL(objectIndex).setNsbca(((NSBCAreader) reader).readFile());
-                break;
-            case ModelAnimation.TYPE_NSBTA:
-                reader = new NSBTAreader(new ByteReader(anim.getData()));
-                display.getObjectGL(objectIndex).setNsbta((NSBTA) ((NSBTAreader) reader).readFile());
-                break;
-            case ModelAnimation.TYPE_NSBTP:
-                reader = new NSBTPreader(new ByteReader(anim.getData()));
-                display.getObjectGL(objectIndex).setNsbtp((NSBTP) ((NSBTPreader) reader).readFile());
-                break;
-        }
-        display.requestUpdate();
-        /*else if (anim.getAnimationType() == BuildAnimation.TYPE_NSBMA) {
-            NSBMAreader reader = new NSBMAreader(new ByteReader(anim.getData()));
-            nitroDisplayGL1.getHandler().setNsbma((NSBMA) reader.readFile());
-            nitroDisplayGL1.requestUpdate();
-        }*/
+        buildHandler.getBuildingList().remove(jlBuildFile.getSelectedIndex());
+        DefaultListModel m = (DefaultListModel) jlBuildFile.getModel();
+        m.remove(jlBuildFile.getSelectedIndex());
+        jlBuildFile.setModel(m);
+        updateViewNitroDisplayMap();
+        updateViewBuildFileList(0);
     }
 
     public void updateViewNitroDisplayMap() {
@@ -248,8 +258,11 @@ public class BuildingEditorDialogWB extends JDialog {
                 object = nitroDisplayMap.getObjectGL(1 + i);
             }
             try {
-                object.setNsbmdData(currAB.getModel(currAB.getIDToModel(e.id)).getData());
-                updateViewBuildFileList(0);
+                int num = currAB.getIDToModel(e.id);
+                if (num != -1)
+                    object.setNsbmdData(currAB.getModel(num).getData());
+                else
+                    object.setNsbmdData(currAB.getModel(0).getData());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -264,12 +277,16 @@ public class BuildingEditorDialogWB extends JDialog {
     }
 
     private void jlBuildFileValueChanged(ListSelectionEvent e) {
-        ObjectGL object = nitroDisplayMap.getObjectGL(1 + jlBuildFile.getSelectedIndex());
-        WBBuildingEntry entry = buildHandler.getBuildingList().get(jlBuildFile.getSelectedIndex());
+        if (jlBuildFile.getSelectedIndex() == -1)
+            return;
+        shouldUpdate = false;
+        currEntry = jlBuildFile.getSelectedIndex();
+        WBBuildingEntry entry = buildHandler.getBuildingList().get(currEntry);
         jsBuildID.setValue(entry.id);
-        jsBuildX.setValue(object.getX());
-        jsBuildZ.setValue(object.getZ());
-        jsBuildY.setValue(object.getY());
+        jsBuildX.setValue(entry.coords[0].toFloat() * 16f);
+        jsBuildZ.setValue(-entry.coords[2].toFloat() * 16f);
+        jsBuildY.setValue(entry.coords[1].toFloat() * 16f);
+        shouldUpdate = true;
     }
 
     private void initComponents() {
