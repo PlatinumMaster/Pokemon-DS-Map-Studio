@@ -1,27 +1,15 @@
 package editor.buildingeditor2;
 
-import editor.buildingeditor2.animations.MapAnimations;
 import editor.buildingeditor2.animations.ModelAnimation;
-import editor.buildingeditor2.areabuild.AreaBuildList;
-import editor.buildingeditor2.areadata.AreaDataListHGSS;
-import editor.buildingeditor2.tileset.BuildTilesetList;
 import editor.buildingeditor2.wb.*;
 import editor.game.GameFileSystemB2W2;
-import editor.narc2.Narc;
-import editor.narc2.NarcFile;
-import editor.narc2.NarcIO;
-import editor.nsbtx.Nsbtx;
-import editor.nsbtx2.Nsbtx2;
-import editor.nsbtx2.NsbtxLoader2;
-import editor.nsbtx2.NsbtxPalette;
-import editor.nsbtx2.NsbtxTexture;
-import utils.BinaryReader;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
+import formats.narc2.Narc;
+import formats.narc2.NarcFile;
+import formats.nsbtx2.Nsbtx2;
+import formats.nsbtx2.NsbtxLoader2;
+import formats.narc2.Narc;
+import formats.narc2.NarcIO;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
