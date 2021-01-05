@@ -17,21 +17,10 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import editor.buildingeditor2.animations.ModelAnimation;
-import editor.buildingeditor2.buildfile.Build;
 import editor.buildingeditor2.buildfile.BuildFile;
 import editor.buildingeditor2.wb.*;
 import editor.handler.MapEditorHandler;
-import formats.nsbtx2.*;
 import net.miginfocom.swing.*;
-import nitroreader.nsbca.NSBCAreader;
-import nitroreader.nsbmd.NSBMD;
-import nitroreader.nsbta.NSBTA;
-import nitroreader.nsbta.NSBTAreader;
-import nitroreader.nsbtp.NSBTP;
-import nitroreader.nsbtp.NSBTPreader;
-import nitroreader.shared.ByteReader;
 import renderer.*;
 import utils.Utils;
 
@@ -41,9 +30,7 @@ import utils.Utils;
 public class BuildingEditorDialogWB extends JDialog {
     private MapEditorHandler handler;
     private BuildHandlerWB buildHandler;
-    private JList<String> jlBuildModel;
     private AB currAB;
-    private ArrayList<String> BuildingNames;
     private int currEntry;
     private Utils.MutableBoolean buildPropertiesEnabled = new Utils.MutableBoolean(true);
     private Utils.MutableBoolean jlBuildFileEnabled = new Utils.MutableBoolean(true);
@@ -149,7 +136,6 @@ public class BuildingEditorDialogWB extends JDialog {
 
     private void jcBuildIDStateChanged(ActionEvent e) {
         if (buildPropertiesEnabled.value) {
-            // May be buggy, haven't throughly tested.
             buildHandler.getBuildingList().get(currEntry).id = currAB.getModelToID(jcBuildID.getSelectedIndex());
             updateViewNitroDisplayMap();
             updateViewBuildFileList(jlBuildFile.getSelectedIndex());
