@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.3.0.337" Java: "14.0.2" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.8" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -60,7 +60,7 @@ new FormModel {
 						"$rowConstraints": "[fill][grow,fill]"
 					} ) {
 						name: "jPanel15"
-						"border": new javax.swing.border.TitledBorder( "Building Editor (*.bld)" )
+						"border": new javax.swing.border.TitledBorder( "Building List" )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "jScrollPane8"
 							"horizontalScrollBarPolicy": 31
@@ -92,21 +92,14 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JComboBox" ) {
 								name: "jcBuildID"
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "jcBuildIDStateChanged", true ) )
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 1 0"
-							} )
-							add( new FormComponent( "javax.swing.JButton" ) {
-								name: "jbChooseModelBld"
-								"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/ReplaceIcon.png" )
-								"text": "Change Model"
-								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "jbChooseModelBldActionPerformed", true ) )
-							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-								"value": "cell 3 0"
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel14"
 								"foreground": new java.awt.Color( 204, 0, 0, 255 )
-								"text": "X: "
+								"text": "X (Left and Right): "
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 0 1"
 							} )
@@ -120,16 +113,13 @@ new FormModel {
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel15"
 								"foreground": new java.awt.Color( 51, 153, 0, 255 )
-								"text": "Y: "
+								"text": "Y (Up and Down) "
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 0 2"
 							} )
 							add( new FormComponent( "javax.swing.JSpinner" ) {
 								name: "jsBuildY"
-								"model": new javax.swing.SpinnerNumberModel {
-									stepSize: 8.0f
-									value: 0.0f
-								}
+								"model": new javax.swing.SpinnerNumberModel( 0.0f, -256.0f, 256.0f, 8.0f )
 								addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "jsBuildYStateChanged", true ) )
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 1 2"
@@ -137,25 +127,16 @@ new FormModel {
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel16"
 								"foreground": new java.awt.Color( 0, 0, 204, 255 )
-								"text": "Z: "
+								"text": "Z (Forwards and Backwards):"
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 0 3"
 							} )
 							add( new FormComponent( "javax.swing.JSpinner" ) {
 								name: "jsBuildZ"
-								"model": new javax.swing.SpinnerNumberModel {
-									stepSize: 8.0f
-									value: 0.0f
-								}
+								"model": new javax.swing.SpinnerNumberModel( 0.0f, -256.0f, 256.0f, 8.0f )
 								addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "jsBuildZStateChanged", true ) )
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 1 3"
-							} )
-							add( new FormComponent( "javax.swing.JLabel" ) {
-								name: "jLabel20"
-								"text": "*[Note: axis are rotated compared to map editor's axis]"
-							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-								"value": "cell 0 4 4 1"
 							} )
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 							"value": "cell 1 1"

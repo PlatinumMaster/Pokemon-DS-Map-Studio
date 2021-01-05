@@ -52,6 +52,11 @@ public class AB {
         return IDLookupTable.get(ID);
     }
 
+    public int nModels()
+    {
+        return this.Models.size();
+    }
+
     public short getModelToID(int ID)
     {
         return ModelToID.get(ID);

@@ -43,8 +43,10 @@ public class BuildingEditorDialogWB extends JDialog {
     private BuildHandlerWB buildHandler;
     private JList<String> jlBuildModel;
     private AB currAB;
+    private ArrayList<String> BuildingNames;
     private int currEntry;
-    private boolean shouldUpdate;
+    private Utils.MutableBoolean buildPropertiesEnabled = new Utils.MutableBoolean(true);
+    private Utils.MutableBoolean jlBuildFileEnabled = new Utils.MutableBoolean(true);
 
     public BuildingEditorDialogWB(Window owner) {
         super(owner);
@@ -62,12 +64,21 @@ public class BuildingEditorDialogWB extends JDialog {
         try {
             buildHandler.loadAllFiles();
             currAB = buildHandler.getExtAB(0x34);
+            updateBuildingNames();
             nitroDisplayMap.requestUpdate();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "There was a problem reading some of the files.",
                     "Error opening game files", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
+    }
+
+    private void updateBuildingNames()
+    {
+        DefaultComboBoxModel m = new DefaultComboBoxModel();
+        for (int i = 0; i < currAB.nModels(); i++)
+            m.addElement(String.format("%d: %s", currAB.getModelToID(i), currAB.getModel(i).getName()));
+        jcBuildID.setModel(m);
     }
 
     private void jbOpenMapActionPerformed(ActionEvent e) {
@@ -118,7 +129,8 @@ public class BuildingEditorDialogWB extends JDialog {
     }
 
     private void updateViewBuildFileList(int indexSelected) {
-        DefaultComboBoxModel listModel = new DefaultComboBoxModel<>();
+        jlBuildFileEnabled.value = false;
+        DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < buildHandler.getBuildingList().size(); i++) {
             WBBuildingEntry e = buildHandler.getBuildingList().get(i);
             int num = currAB.getIDToModel(e.id);
@@ -127,45 +139,45 @@ public class BuildingEditorDialogWB extends JDialog {
             else
                 listModel.addElement(String.format("%d: Unknown", e.id));
         }
-        jcBuildID.setModel(listModel);
-        jcBuildID.setSelectedIndex(indexSelected);
+        jlBuildFile.setModel(listModel);
+        jlBuildFileEnabled.value = true;
+
+        jlBuildFile.setSelectedIndex(indexSelected);
+        jlBuildFile.ensureIndexIsVisible(indexSelected);
+
     }
 
     private void jcBuildIDStateChanged(ActionEvent e) {
-        // Buggy. Look into it!
-        if (!shouldUpdate)
-            return;
-        buildHandler.getBuildingList().get(currEntry).id = currAB.getModelToID(jcBuildID.getSelectedIndex());
-        updateViewNitroDisplayMap();
-        updateViewBuildFileList(jcBuildID.getSelectedIndex());
-    }
-
-    private void jbChooseModelBldActionPerformed(ActionEvent e) {
-        // TODO add your code here
+        if (buildPropertiesEnabled.value) {
+            // May be buggy, haven't throughly tested.
+            buildHandler.getBuildingList().get(currEntry).id = currAB.getModelToID(jcBuildID.getSelectedIndex());
+            updateViewNitroDisplayMap();
+            updateViewBuildFileList(jlBuildFile.getSelectedIndex());
+        }
     }
 
     private void jsBuildXStateChanged(ChangeEvent e) {
-        if (!shouldUpdate)
-            return;
-        float val = Float.parseFloat(jsBuildX.getValue().toString());
-        buildHandler.getBuildingList().get(currEntry).coords[0].setVal(FX32.TryParse(val / 16f));
-        updateViewNitroDisplayMap();
+        if (buildPropertiesEnabled.value) {
+            float val = ((Double)jsBuildX.getValue()).floatValue();
+            buildHandler.getBuildingList().get(currEntry).coords[0].setVal(FX32.TryParse(val / 16f));
+            updateViewNitroDisplayMap();
+        }
     }
 
     private void jsBuildYStateChanged(ChangeEvent e) {
-        if (!shouldUpdate)
-            return;
-        float val = Float.parseFloat(jsBuildY.getValue().toString());
-        buildHandler.getBuildingList().get(currEntry).coords[1].setVal(FX32.TryParse(val / 16f));
-        updateViewNitroDisplayMap();
+        if (buildPropertiesEnabled.value) {
+            float val = ((Double)jsBuildY.getValue()).floatValue();
+            buildHandler.getBuildingList().get(currEntry).coords[1].setVal(FX32.TryParse(val / 16f));
+            updateViewNitroDisplayMap();
+        }
     }
 
     private void jsBuildZStateChanged(ChangeEvent e) {
-        if (!shouldUpdate)
-            return;
-        float val = Float.parseFloat(jsBuildY.getValue().toString());
-        buildHandler.getBuildingList().get(currEntry).coords[2].setVal(FX32.TryParse(val / 16f));
-        updateViewNitroDisplayMap();
+        if (buildPropertiesEnabled.value) {
+            float val = ((Double)jsBuildZ.getValue()).floatValue();
+            buildHandler.getBuildingList().get(currEntry).coords[2].setVal(FX32.TryParse(val / 16f));
+            updateViewNitroDisplayMap();
+        }
     }
 
     private void jbExportBldActionPerformed(ActionEvent e) {
@@ -189,16 +201,6 @@ public class BuildingEditorDialogWB extends JDialog {
             try {
                 handler.setLastMapDirectoryUsed(fc.getSelectedFile().getParent());
 
-                // Update coordinates
-                for (int i = 0; i < buildHandler.getBuildingList().size(); i++)
-                {
-                    // Update coordinates
-                    ObjectGL o = nitroDisplayMap.getObjectGL(1 + i);
-                    buildHandler.getBuildingList().get(i).coords[0].setVal(FX32.TryParse(o.getX() / 16f));
-                    buildHandler.getBuildingList().get(i).coords[1].setVal(FX32.TryParse(o.getY() / 16f));
-                    buildHandler.getBuildingList().get(i).coords[2].setVal(FX32.TryParse(-o.getZ() / 16f));
-                }
-
                 byte[] buf = buildHandler.exportBLD(buildHandler.getBuildingList());
                 try (FileOutputStream fos = new FileOutputStream(fc.getSelectedFile())) {
                     fos.write(buf);
@@ -210,15 +212,21 @@ public class BuildingEditorDialogWB extends JDialog {
                         "Error writing BLD file", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
 
+    public void setBoundingBoxes() {
+        for (ObjectGL object : nitroDisplayMap.getObjectsGL()) {
+            object.setDrawBounds(false);
+        }
 
+        try {
+            nitroDisplayMap.getObjectsGL().get(1 + jlBuildFile.getSelectedIndex()).setDrawBounds(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void jbAddBuildBldActionPerformed(ActionEvent e) {
-        DefaultListModel m = (DefaultListModel) jlBuildFile.getModel();
-        NitroModel model = currAB.getModel(currAB.getIDToModel((short) 0));
-        m.addElement(String.format("%d: %s", 0, model.getName()));
-        jlBuildFile.setModel(m);
         buildHandler.getBuildingList().add(new WBBuildingEntry(){
             {
                 coords = new FX32[]{new FX32(0x0), new FX32(0x0), new FX32(0x0)};
@@ -226,11 +234,17 @@ public class BuildingEditorDialogWB extends JDialog {
                 rotation = 0x0;
             }
         });
+        updateViewBuildFileList(buildHandler.getBuildingList().size() - 1);
         updateViewNitroDisplayMap();
-        updateViewBuildFileList(buildHandler.getBuildingList().size());
     }
 
     private void jbRemoveBldActionPerformed(ActionEvent e) {
+        if (buildHandler.getBuildingList().size() == 0) {
+            JOptionPane.showMessageDialog(handler.getMainFrame(),
+                    "There's nothing to remove.",
+                    "You good bro?", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         buildHandler.getBuildingList().remove(jlBuildFile.getSelectedIndex());
         DefaultListModel m = (DefaultListModel) jlBuildFile.getModel();
         m.remove(jlBuildFile.getSelectedIndex());
@@ -246,7 +260,6 @@ public class BuildingEditorDialogWB extends JDialog {
 
         for (int i = 0; i < buildHandler.getBuildingList().size(); i++) {
             WBBuildingEntry e = buildHandler.getBuildingList().get(i);
-
             ObjectGL object;
             try {
                 object = nitroDisplayMap.getObjectGL(1 + i);
@@ -271,19 +284,22 @@ public class BuildingEditorDialogWB extends JDialog {
             // Negate Y value for proper placement.
             nitroDisplayMap.requestUpdate();
         }
+        setBoundingBoxes();
     }
 
     private void jlBuildFileValueChanged(ListSelectionEvent e) {
-        if (jlBuildFile.getSelectedIndex() == -1)
-            return;
-        shouldUpdate = false;
-        currEntry = jlBuildFile.getSelectedIndex();
-        WBBuildingEntry entry = buildHandler.getBuildingList().get(currEntry);
-        jcBuildID.setSelectedIndex(currEntry);
-        jsBuildX.setValue(entry.coords[0].toFloat() * 16f);
-        jsBuildZ.setValue(-entry.coords[2].toFloat() * 16f);
-        jsBuildY.setValue(entry.coords[1].toFloat() * 16f);
-        shouldUpdate = true;
+        if (jlBuildFile.getSelectedIndex() != -1) {
+            buildPropertiesEnabled.value = false;
+            currEntry = jlBuildFile.getSelectedIndex();
+            WBBuildingEntry entry = buildHandler.getBuildingList().get(currEntry);
+            jlBuildFile.setSelectedIndex(currEntry);
+            jsBuildX.setValue(entry.coords[0].toFloat() * 16f);
+            jsBuildY.setValue(entry.coords[1].toFloat() * 16f);
+            jsBuildZ.setValue(-entry.coords[2].toFloat() * 16f);
+            jcBuildID.setSelectedIndex(currAB.getIDToModel(entry.id));
+            buildPropertiesEnabled.value = true;
+        }
+        updateViewNitroDisplayMap();
     }
 
     private void initComponents() {
@@ -300,14 +316,12 @@ public class BuildingEditorDialogWB extends JDialog {
         jPanel16 = new JPanel();
         jLabel13 = new JLabel();
         jcBuildID = new JComboBox();
-        jbChooseModelBld = new JButton();
         jLabel14 = new JLabel();
         jsBuildX = new JSpinner();
         jLabel15 = new JLabel();
         jsBuildY = new JSpinner();
         jLabel16 = new JLabel();
         jsBuildZ = new JSpinner();
-        jLabel20 = new JLabel();
         jPanel17 = new JPanel();
         jPanel18 = new JPanel();
         jbImportBld = new JButton();
@@ -388,7 +402,7 @@ public class BuildingEditorDialogWB extends JDialog {
 
                 //======== jPanel15 ========
                 {
-                    jPanel15.setBorder(new TitledBorder("Building Editor (*.bld)"));
+                    jPanel15.setBorder(new TitledBorder("Building List"));
                     jPanel15.setLayout(new MigLayout(
                         "insets 0,hidemode 3,gap 5 5",
                         // columns
@@ -440,18 +454,14 @@ public class BuildingEditorDialogWB extends JDialog {
                         //---- jLabel13 ----
                         jLabel13.setText("Building ID:");
                         jPanel16.add(jLabel13, "cell 0 0");
-                        jPanel16.add(jcBuildID, "cell 1 0");
-                        jcBuildID.addActionListener(e -> jcBuildIDStateChanged(e));
 
-                        //---- jbChooseModelBld ----
-                        jbChooseModelBld.setIcon(new ImageIcon(getClass().getResource("/icons/ReplaceIcon.png")));
-                        jbChooseModelBld.setText("Change Model");
-                        jbChooseModelBld.addActionListener(e -> jbChooseModelBldActionPerformed(e));
-                        jPanel16.add(jbChooseModelBld, "cell 3 0");
+                        //---- jcBuildID ----
+                        jcBuildID.addActionListener(e -> jcBuildIDStateChanged(e));
+                        jPanel16.add(jcBuildID, "cell 1 0");
 
                         //---- jLabel14 ----
                         jLabel14.setForeground(new Color(204, 0, 0));
-                        jLabel14.setText("X: ");
+                        jLabel14.setText("X (Left and Right): ");
                         jPanel16.add(jLabel14, "cell 0 1");
 
                         //---- jsBuildX ----
@@ -461,27 +471,23 @@ public class BuildingEditorDialogWB extends JDialog {
 
                         //---- jLabel15 ----
                         jLabel15.setForeground(new Color(51, 153, 0));
-                        jLabel15.setText("Y: ");
+                        jLabel15.setText("Y (Up and Down) ");
                         jPanel16.add(jLabel15, "cell 0 2");
 
                         //---- jsBuildY ----
-                        jsBuildY.setModel(new SpinnerNumberModel(0.0F, null, null, 8.0F));
+                        jsBuildY.setModel(new SpinnerNumberModel(0.0F, -256.0F, 256.0F, 8.0F));
                         jsBuildY.addChangeListener(e -> jsBuildYStateChanged(e));
                         jPanel16.add(jsBuildY, "cell 1 2");
 
                         //---- jLabel16 ----
                         jLabel16.setForeground(new Color(0, 0, 204));
-                        jLabel16.setText("Z: ");
+                        jLabel16.setText("Z (Forwards and Backwards):");
                         jPanel16.add(jLabel16, "cell 0 3");
 
                         //---- jsBuildZ ----
-                        jsBuildZ.setModel(new SpinnerNumberModel(0.0F, null, null, 8.0F));
+                        jsBuildZ.setModel(new SpinnerNumberModel(0.0F, -256.0F, 256.0F, 8.0F));
                         jsBuildZ.addChangeListener(e -> jsBuildZStateChanged(e));
                         jPanel16.add(jsBuildZ, "cell 1 3");
-
-                        //---- jLabel20 ----
-                        jLabel20.setText("*[Note: axis are rotated compared to map editor's axis]");
-                        jPanel16.add(jLabel20, "cell 0 4 4 1");
                     }
                     jPanel15.add(jPanel16, "cell 1 1");
 
@@ -553,14 +559,12 @@ public class BuildingEditorDialogWB extends JDialog {
     private JPanel jPanel16;
     private JLabel jLabel13;
     private JComboBox jcBuildID;
-    private JButton jbChooseModelBld;
     private JLabel jLabel14;
     private JSpinner jsBuildX;
     private JLabel jLabel15;
     private JSpinner jsBuildY;
     private JLabel jLabel16;
     private JSpinner jsBuildZ;
-    private JLabel jLabel20;
     private JPanel jPanel17;
     private JPanel jPanel18;
     private JButton jbImportBld;

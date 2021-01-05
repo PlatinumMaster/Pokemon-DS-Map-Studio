@@ -36,20 +36,13 @@ public class BuildHandlerWB {
         intAB = new ArrayList<>();
         extABTextures = new ArrayList<>();
         intABTextures = new ArrayList<>();
-
+        buildingList = new WBBuildingList();
     }
 
     public WBBuildingList getBuildingList()
     {
         return this.buildingList;
     }
-
-    public void replaceEntry(int index, WBBuildingEntry e)
-    {
-        this.buildingList.remove(index);
-        this.buildingList.add(index, e);
-    }
-
 
     public AB getExtAB(int number)
     {
@@ -174,8 +167,7 @@ public class BuildHandlerWB {
     public void loadBuildingData(Path path)
     {
         try {
-            byte[] bldFile = Files.readAllBytes(path);
-            buildingList = parseBLD(bldFile);
+            buildingList = parseBLD(Files.readAllBytes(path));
         }
         catch (Exception e)
         {
