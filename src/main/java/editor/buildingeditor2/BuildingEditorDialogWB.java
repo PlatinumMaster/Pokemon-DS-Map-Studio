@@ -9,10 +9,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
@@ -145,7 +142,7 @@ public class BuildingEditorDialogWB extends JDialog {
     private void jsBuildXStateChanged(ChangeEvent e) {
         if (buildPropertiesEnabled.value) {
             float val = ((Double)jsBuildX.getValue()).floatValue();
-            buildHandler.getBuildingList().get(currEntry).coords[0].setVal(FX32.TryParse(val / 16f));
+            buildHandler.getBuildingList().get(currEntry).coords[0].setVal(FX32.TryParse(val));
             updateViewNitroDisplayMap();
         }
     }
@@ -153,7 +150,7 @@ public class BuildingEditorDialogWB extends JDialog {
     private void jsBuildYStateChanged(ChangeEvent e) {
         if (buildPropertiesEnabled.value) {
             float val = ((Double)jsBuildY.getValue()).floatValue();
-            buildHandler.getBuildingList().get(currEntry).coords[1].setVal(FX32.TryParse(val / 16f));
+            buildHandler.getBuildingList().get(currEntry).coords[2].setVal(FX32.TryParse(-val));
             updateViewNitroDisplayMap();
         }
     }
@@ -161,7 +158,7 @@ public class BuildingEditorDialogWB extends JDialog {
     private void jsBuildZStateChanged(ChangeEvent e) {
         if (buildPropertiesEnabled.value) {
             float val = ((Double)jsBuildZ.getValue()).floatValue();
-            buildHandler.getBuildingList().get(currEntry).coords[2].setVal(FX32.TryParse(val / 16f));
+            buildHandler.getBuildingList().get(currEntry).coords[1].setVal(FX32.TryParse(val));
             updateViewNitroDisplayMap();
         }
     }
@@ -175,7 +172,6 @@ public class BuildingEditorDialogWB extends JDialog {
         fc.setApproveButtonText("Save");
         fc.setDialogTitle("Save Building File");
         try {
-            //TODO: Replace this with some index bounds cheking?
             File file = new File(handler.getMapMatrix().filePath);
             String fileName = Utils.removeExtensionFromPath(file.getName()) + "." + BuildFile.fileExtension;
             fc.setSelectedFile(new File(fileName));
@@ -194,7 +190,7 @@ public class BuildingEditorDialogWB extends JDialog {
                     throw new IOException();
                 }
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "There was a problem writing the BLD file",
+                JOptionPane.showMessageDialog(this, "There was a problem writing to the BLD file.",
                         "Error writing BLD file", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -279,9 +275,9 @@ public class BuildingEditorDialogWB extends JDialog {
             currEntry = jlBuildFile.getSelectedIndex();
             WBBuildingEntry entry = buildHandler.getBuildingList().get(currEntry);
             jlBuildFile.setSelectedIndex(currEntry);
-            jsBuildX.setValue(entry.coords[0].toFloat() * 16f);
-            jsBuildY.setValue(entry.coords[1].toFloat() * 16f);
-            jsBuildZ.setValue(-entry.coords[2].toFloat() * 16f);
+            jsBuildX.setValue(entry.coords[0].toFloat());
+            jsBuildY.setValue(-entry.coords[2].toFloat());
+            jsBuildZ.setValue(entry.coords[1].toFloat());
             jcBuildID.setSelectedIndex(currAB.getIDToModel(entry.id));
             buildPropertiesEnabled.value = true;
         }
@@ -295,19 +291,7 @@ public class BuildingEditorDialogWB extends JDialog {
         jPanel14 = new JPanel();
         nitroDisplayMap = new NitroDisplayGL();
         jbOpenMap = new JButton();
-        jLabel26 = new JLabel();
         jPanel15 = new JPanel();
-        jScrollPane8 = new JScrollPane();
-        jlBuildFile = new JList<>();
-        jPanel16 = new JPanel();
-        jLabel13 = new JLabel();
-        jcBuildID = new JComboBox();
-        jLabel14 = new JLabel();
-        jsBuildX = new JSpinner();
-        jLabel15 = new JLabel();
-        jsBuildY = new JSpinner();
-        jLabel16 = new JLabel();
-        jsBuildZ = new JSpinner();
         jPanel17 = new JPanel();
         jPanel18 = new JPanel();
         jbImportBld = new JButton();
@@ -315,6 +299,17 @@ public class BuildingEditorDialogWB extends JDialog {
         jPanel19 = new JPanel();
         jbAddBuildBld = new JButton();
         jbRemoveBld = new JButton();
+        jScrollPane8 = new JScrollPane();
+        jlBuildFile = new JList<>();
+        jPanel16 = new JPanel();
+        jLabel13 = new JLabel();
+        jcBuildID = new JComboBox();
+        jLabel14 = new JLabel();
+        jsBuildX = new JSpinner();
+        jLabel16 = new JLabel();
+        jsBuildY = new JSpinner();
+        jLabel15 = new JLabel();
+        jsBuildZ = new JSpinner();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -334,13 +329,7 @@ public class BuildingEditorDialogWB extends JDialog {
 
             //======== jPanel13 ========
             {
-                jPanel13.setLayout(new MigLayout(
-                    "insets 0,hidemode 3,gap 5 5",
-                    // columns
-                    "[grow,fill]" +
-                    "[grow,fill]",
-                    // rows
-                    "[grow,fill]"));
+                jPanel13.setLayout(new GridLayout());
 
                 //======== jPanel14 ========
                 {
@@ -357,17 +346,7 @@ public class BuildingEditorDialogWB extends JDialog {
                     //======== nitroDisplayMap ========
                     {
                         nitroDisplayMap.setBorder(new LineBorder(new Color(102, 102, 102)));
-
-                        GroupLayout nitroDisplayMapLayout = new GroupLayout(nitroDisplayMap);
-                        nitroDisplayMap.setLayout(nitroDisplayMapLayout);
-                        nitroDisplayMapLayout.setHorizontalGroup(
-                            nitroDisplayMapLayout.createParallelGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                        );
-                        nitroDisplayMapLayout.setVerticalGroup(
-                            nitroDisplayMapLayout.createParallelGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                        );
+                        nitroDisplayMap.setLayout(new BoxLayout(nitroDisplayMap, BoxLayout.X_AXIS));
                     }
                     jPanel14.add(nitroDisplayMap, "cell 0 1 2 1");
 
@@ -379,103 +358,20 @@ public class BuildingEditorDialogWB extends JDialog {
 			jbOpenMapActionPerformed(e);
 		});
                     jPanel14.add(jbOpenMap, "cell 0 0");
-
-                    //---- jLabel26 ----
-                    jLabel26.setText("*[Note: This map is used as a visual help for placing the buildings easily]");
-                    jPanel14.add(jLabel26, "cell 1 0");
                 }
-                jPanel13.add(jPanel14, "cell 0 0");
+                jPanel13.add(jPanel14);
 
                 //======== jPanel15 ========
                 {
-                    jPanel15.setBorder(new TitledBorder("Building List"));
+                    jPanel15.setBorder(new TitledBorder("Building List Editor"));
                     jPanel15.setLayout(new MigLayout(
-                        "insets 0,hidemode 3,gap 5 5",
+                        "insets 0,hidemode 3,gap 0 5",
                         // columns
                         "[grow,fill]" +
                         "[fill]",
                         // rows
                         "[fill]" +
                         "[grow,fill]"));
-
-                    //======== jScrollPane8 ========
-                    {
-                        jScrollPane8.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-                        jScrollPane8.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-                        //---- jlBuildFile ----
-                        jlBuildFile.setModel(new AbstractListModel<String>() {
-                            String[] values = {
-
-                            };
-                            @Override
-                            public int getSize() { return values.length; }
-                            @Override
-                            public String getElementAt(int i) { return values[i]; }
-                        });
-                        jlBuildFile.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                        jlBuildFile.addListSelectionListener(e -> jlBuildFileValueChanged(e));
-                        jScrollPane8.setViewportView(jlBuildFile);
-                    }
-                    jPanel15.add(jScrollPane8, "cell 0 0 1 2");
-
-                    //======== jPanel16 ========
-                    {
-                        jPanel16.setBorder(new TitledBorder("Selected Building"));
-                        jPanel16.setLayout(new MigLayout(
-                            "insets 0,hidemode 3,gap 5 5",
-                            // columns
-                            "[fill]" +
-                            "[grow,fill]" +
-                            "[fill]" +
-                            "[grow,fill]",
-                            // rows
-                            "[fill]" +
-                            "[fill]" +
-                            "[fill]" +
-                            "[fill]" +
-                            "[fill]" +
-                            "[]"));
-
-                        //---- jLabel13 ----
-                        jLabel13.setText("Building ID:");
-                        jPanel16.add(jLabel13, "cell 0 0");
-
-                        //---- jcBuildID ----
-                        jcBuildID.addActionListener(e -> jcBuildIDStateChanged(e));
-                        jPanel16.add(jcBuildID, "cell 1 0");
-
-                        //---- jLabel14 ----
-                        jLabel14.setForeground(new Color(204, 0, 0));
-                        jLabel14.setText("X (Left and Right): ");
-                        jPanel16.add(jLabel14, "cell 0 1");
-
-                        //---- jsBuildX ----
-                        jsBuildX.setModel(new SpinnerNumberModel(0.0F, -256.0F, 256.0F, 8.0F));
-                        jsBuildX.addChangeListener(e -> jsBuildXStateChanged(e));
-                        jPanel16.add(jsBuildX, "cell 1 1");
-
-                        //---- jLabel15 ----
-                        jLabel15.setForeground(new Color(51, 153, 0));
-                        jLabel15.setText("Y (Up and Down) ");
-                        jPanel16.add(jLabel15, "cell 0 2");
-
-                        //---- jsBuildY ----
-                        jsBuildY.setModel(new SpinnerNumberModel(0.0F, -256.0F, 256.0F, 8.0F));
-                        jsBuildY.addChangeListener(e -> jsBuildYStateChanged(e));
-                        jPanel16.add(jsBuildY, "cell 1 2");
-
-                        //---- jLabel16 ----
-                        jLabel16.setForeground(new Color(0, 0, 204));
-                        jLabel16.setText("Z (Forwards and Backwards):");
-                        jPanel16.add(jLabel16, "cell 0 3");
-
-                        //---- jsBuildZ ----
-                        jsBuildZ.setModel(new SpinnerNumberModel(0.0F, -256.0F, 256.0F, 8.0F));
-                        jsBuildZ.addChangeListener(e -> jsBuildZStateChanged(e));
-                        jPanel16.add(jsBuildZ, "cell 1 3");
-                    }
-                    jPanel15.add(jPanel16, "cell 1 1");
 
                     //======== jPanel17 ========
                     {
@@ -520,9 +416,89 @@ public class BuildingEditorDialogWB extends JDialog {
                         }
                         jPanel17.add(jPanel19);
                     }
-                    jPanel15.add(jPanel17, "cell 1 0");
+                    jPanel15.add(jPanel17, "cell 0 0 2 1");
+
+                    //======== jScrollPane8 ========
+                    {
+                        jScrollPane8.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                        jScrollPane8.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                        jScrollPane8.setViewportBorder(new TitledBorder("Building List"));
+
+                        //---- jlBuildFile ----
+                        jlBuildFile.setModel(new AbstractListModel<String>() {
+                            String[] values = {
+
+                            };
+                            @Override
+                            public int getSize() { return values.length; }
+                            @Override
+                            public String getElementAt(int i) { return values[i]; }
+                        });
+                        jlBuildFile.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                        jlBuildFile.setBorder(new TitledBorder("text"));
+                        jlBuildFile.addListSelectionListener(e -> jlBuildFileValueChanged(e));
+                        jScrollPane8.setViewportView(jlBuildFile);
+                    }
+                    jPanel15.add(jScrollPane8, "cell 0 0 2 1");
+
+                    //======== jPanel16 ========
+                    {
+                        jPanel16.setBorder(new TitledBorder("Properties of the Selected Building"));
+                        jPanel16.setLayout(new MigLayout(
+                            "insets 0,hidemode 3,gap 5 5",
+                            // columns
+                            "[fill]" +
+                            "[grow,fill]" +
+                            "[fill]" +
+                            "[grow,fill]",
+                            // rows
+                            "[fill]" +
+                            "[fill]" +
+                            "[fill]" +
+                            "[fill]" +
+                            "[fill]"));
+
+                        //---- jLabel13 ----
+                        jLabel13.setText("Building ID:");
+                        jPanel16.add(jLabel13, "cell 0 0");
+
+                        //---- jcBuildID ----
+                        jcBuildID.addActionListener(e -> jcBuildIDStateChanged(e));
+                        jPanel16.add(jcBuildID, "cell 1 0");
+
+                        //---- jLabel14 ----
+                        jLabel14.setForeground(new Color(204, 0, 0));
+                        jLabel14.setText("X (Left and Right): ");
+                        jPanel16.add(jLabel14, "cell 0 1");
+
+                        //---- jsBuildX ----
+                        jsBuildX.setModel(new SpinnerNumberModel(0.0F, -16.0F, 16.0F, 0.5F));
+                        jsBuildX.addChangeListener(e -> jsBuildXStateChanged(e));
+                        jPanel16.add(jsBuildX, "cell 1 1");
+
+                        //---- jLabel16 ----
+                        jLabel16.setForeground(new Color(0, 0, 204));
+                        jLabel16.setText("Y (Forwards and Backwards):");
+                        jPanel16.add(jLabel16, "cell 0 2");
+
+                        //---- jsBuildY ----
+                        jsBuildY.setModel(new SpinnerNumberModel(0.0F, -16.0F, 16.0F, 0.5F));
+                        jsBuildY.addChangeListener(e -> jsBuildYStateChanged(e));
+                        jPanel16.add(jsBuildY, "cell 1 2");
+
+                        //---- jLabel15 ----
+                        jLabel15.setForeground(new Color(51, 153, 0));
+                        jLabel15.setText("Z (Up and Down) ");
+                        jPanel16.add(jLabel15, "cell 0 3");
+
+                        //---- jsBuildZ ----
+                        jsBuildZ.setModel(new SpinnerNumberModel(0.0F, -16.0F, 16.0F, 0.5F));
+                        jsBuildZ.addChangeListener(e -> jsBuildZStateChanged(e));
+                        jPanel16.add(jsBuildZ, "cell 1 3");
+                    }
+                    jPanel15.add(jPanel16, "cell 0 1");
                 }
-                jPanel13.add(jPanel15, "cell 1 0");
+                jPanel13.add(jPanel15);
             }
             jTabbedPane1.addTab("Map Buildings Editor", jPanel13);
         }
@@ -538,19 +514,7 @@ public class BuildingEditorDialogWB extends JDialog {
     private JPanel jPanel14;
     private NitroDisplayGL nitroDisplayMap;
     private JButton jbOpenMap;
-    private JLabel jLabel26;
     private JPanel jPanel15;
-    private JScrollPane jScrollPane8;
-    private JList<String> jlBuildFile;
-    private JPanel jPanel16;
-    private JLabel jLabel13;
-    private JComboBox jcBuildID;
-    private JLabel jLabel14;
-    private JSpinner jsBuildX;
-    private JLabel jLabel15;
-    private JSpinner jsBuildY;
-    private JLabel jLabel16;
-    private JSpinner jsBuildZ;
     private JPanel jPanel17;
     private JPanel jPanel18;
     private JButton jbImportBld;
@@ -558,5 +522,16 @@ public class BuildingEditorDialogWB extends JDialog {
     private JPanel jPanel19;
     private JButton jbAddBuildBld;
     private JButton jbRemoveBld;
+    private JScrollPane jScrollPane8;
+    private JList<String> jlBuildFile;
+    private JPanel jPanel16;
+    private JLabel jLabel13;
+    private JComboBox jcBuildID;
+    private JLabel jLabel14;
+    private JSpinner jsBuildX;
+    private JLabel jLabel16;
+    private JSpinner jsBuildY;
+    private JLabel jLabel15;
+    private JSpinner jsBuildZ;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
