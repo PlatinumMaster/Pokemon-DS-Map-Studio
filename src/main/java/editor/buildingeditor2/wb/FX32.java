@@ -8,26 +8,23 @@ public class FX32 {
         this.val = num;
     }
 
-    public int Value()
+    public int GetValue()
     {
         return val;
     }
 
-    public float toFloat()
+    public float GetValueAsFloat()
     {
-        return ((short)(val >> 0x10)) + ((val & 0xFFFF) / 65536f);
+        return val * 4096;
     }
 
-    public void setVal(int val)
+    public void SetValue(int val)
     {
         this.val = val;
     }
 
     public static int TryParse(float val)
     {
-        // (uint16_t)((n - floor(n)) * 0x10000) + floor(n)
-        double frac = val - Math.floor(val);
-        int integer = ((int)Math.floor(val)) << 0x10;
-        return (int)(frac * 0x10000) + integer;
+        return (int) (val / 4096);
     }
 }

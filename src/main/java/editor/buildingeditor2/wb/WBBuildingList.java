@@ -19,7 +19,6 @@ public class WBBuildingList {
         buildings.add(index, newEntry);
     }
 
-
     public void remove(int index)
     {
         buildings.remove(index);

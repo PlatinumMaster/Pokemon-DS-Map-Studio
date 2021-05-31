@@ -7,12 +7,16 @@ import formats.narc2.Narc;
 import formats.narc2.NarcFile;
 import formats.nsbtx2.Nsbtx2;
 import formats.nsbtx2.NsbtxLoader2;
-import formats.narc2.Narc;
 import formats.narc2.NarcIO;
+import nitroreader.nsbtx.NSBTX;
+import nitroreader.nsbtx.NSBTXreader;
+import nitroreader.shared.ByteReader;
+import utils.BinaryArrayReader;
+import utils.BinaryReader;
+
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -26,8 +30,8 @@ public class BuildHandlerWB {
     private WBBuildingList buildingList;
     private ArrayList<AB> extAB;
     private ArrayList<AB> intAB;
-    private ArrayList<Nsbtx2> extABTextures;
-    private ArrayList<Nsbtx2> intABTextures;
+    private ArrayList<byte[]> extABTextures;
+    private ArrayList<byte[]> intABTextures;
 
     public BuildHandlerWB(String gameFolderPath) {
         this.gameFolderPath = gameFolderPath;
@@ -61,89 +65,74 @@ public class BuildHandlerWB {
             Narc extBuildingTextures = NarcIO.loadNarc(getGameFilePath(gameFileSystem.exteriorBuildingTilesets));
             Narc intBuildingTextures = NarcIO.loadNarc(getGameFilePath(gameFileSystem.interiorBuildingTilesets));
             for (NarcFile n : extBuildingData.getRoot().getFiles())
-                extAB.add(parseAB(n.getData()));
+                extAB.add(ParseAB(new BinaryArrayReader(n.getData(), 0)));
             for (NarcFile n : intBuildingData.getRoot().getFiles())
-                intAB.add(parseAB(n.getData()));
+                intAB.add(ParseAB(new BinaryArrayReader(n.getData(), 0)));
             for (NarcFile n : extBuildingTextures.getRoot().getFiles())
-                extABTextures.add(NsbtxLoader2.loadNsbtx(n.getData()));
+                extABTextures.add(n.getData());
             for (NarcFile n : intBuildingTextures.getRoot().getFiles())
-                intABTextures.add(NsbtxLoader2.loadNsbtx(n.getData()));
+                intABTextures.add(n.getData());
 
         } catch (Exception ex) {
             throw ex;
         }
     }
 
-    public Nsbtx2 getExtABTextures(int num)
+    public byte[] getExtABTextures(int num)
     {
         return extABTextures.get(num);
     }
 
-    public Nsbtx2 getIntABTextures(int num)
+    public byte[] getIntABTextures(int num)
     {
         return intABTextures.get(num);
     }
 
-    public AB parseAB(byte[] str) throws Exception {
+    public AB ParseAB(BinaryArrayReader reader) throws Exception {
         Map<Short, Integer> ModelLookupTable = new HashMap<>();
         ArrayList<Short> IDs = new ArrayList<>();
-        ByteBuffer reader = ByteBuffer.wrap(str);
-        reader.order(ByteOrder.LITTLE_ENDIAN);
         AB ab = new AB();
 
-        ab.magic = reader.getShort();
+        ab.magic = (short) reader.readUInt16();
         if (ab.magic != 0x4241)
             throw new Exception("Invalid AB file!");
 
-        short nFiles = reader.getShort();
+        short nFiles = (short) reader.readUInt16();
         ArrayList<Integer> offsets = new ArrayList<>();
+
         for (int i = 0; i < nFiles; i++)
-            offsets.add(reader.getInt());
-        int fileSize = reader.getInt();
+            offsets.add((int) reader.readUInt32());
+
+        int fileSize = (int) reader.readUInt32();
+
         for (int i = 0; i < nFiles / 2; i++) {
-            reader.position(offsets.get(i));
-            int startABEntrySection = reader.position() + 0x14;
-            ABEntry e = new ABEntry(){
-                {
-                    id = reader.getShort();
-                    unk = reader.getShort();
-                    unk2 = reader.getShort();
-                    x = reader.getShort();
-                    y = reader.getShort();
-                    z = reader.getShort();
-                    unk3 = reader.getShort();
-                    unk4 = reader.getShort();
-                    nItems = reader.getShort();
-                    flag = reader.get();
-                    nAnims = reader.get();
-                }
-            };
-            IDs.add(e.id);
             ArrayList<Integer> fileOffsets = new ArrayList<>();
-            int k = 0;
-            while (k < 4)
-            {
-                int val = reader.getInt();
-                if (val == 0xFFFFFFFF)
-                    break;
-                fileOffsets.add(startABEntrySection + val);
-                k++;
-            }
-            e.files = new ModelAnimation[fileOffsets.size()];
+            int startABEntrySection = offsets.get(i) + 0x14;
+            reader.jumpAbs(offsets.get(i));
+            ABEntry e = new ABEntry() {{
+                    ID = (short) reader.readUInt16();
+                    Count = (short) reader.readUInt16();
+                    DoorID = (short) reader.readUInt16();
+                    X = (short) reader.readUInt16();
+                    Y = (short) reader.readUInt16();
+                    Z = (short) reader.readUInt16();
+                    unk3 = (short) reader.readUInt16();
+                    unk4 = (short) reader.readUInt16();
+                    ItemsCount = (short) reader.readUInt16();
+                    Flag = (byte) reader.readUInt8();
+                    AnimCount = (byte) reader.readUInt8();
+            }};
+            IDs.add(e.ID);
+
+            while (reader.peekUInt32() != -1 && fileOffsets.size() < 4)
+                fileOffsets.add(startABEntrySection + (int) reader.readUInt32());
+
             for (int j = 0; j < fileOffsets.size(); j++)
             {
-                reader.position(fileOffsets.get(j));
-                byte[] buf;
-                if (j == fileOffsets.size() - 1)
-                    buf = new byte[offsets.get(i+1) - fileOffsets.get(j)];
-                else
-                    buf = new byte[fileOffsets.get(j+1) - fileOffsets.get(j)];
-                k = 0;
-                while (reader.position() != fileOffsets.get(j) + e.files.length - 1) {
-                    buf[k] = reader.get();
-                    k++;
-                }
-                e.files[j] = new ModelAnimation(buf, j);
+                reader.jumpAbs(fileOffsets.get(j) + 0x4);
+                int subFileSize = (int) reader.peekUInt32();
+                reader.jumpAbs(fileOffsets.get(j) - 0x4);
+                e.addFile(new ModelAnimation(reader.readBytes(subFileSize), 0));
             }
             ab.add(e);
         }
@@ -151,14 +140,10 @@ public class BuildHandlerWB {
         for (int i = nFiles / 2; i < nFiles; i++)
         {
             ModelLookupTable.put(IDs.get(nFiles - i - 1), nFiles - i - 1);
-            reader.position(offsets.get(i));
-            byte[] file;
-            if (i == nFiles - 1)
-                file = new byte[fileSize - offsets.get(i)];
-            else
-                file = new byte[offsets.get(i+1) - offsets.get(i)];
-            reader.get(file);
-            ab.addModel(new NitroModel(file));
+            reader.jumpAbs(offsets.get(i) + 0x8);
+            int subFileSize = (int) reader.peekUInt32();
+            reader.jumpAbs(offsets.get(i));
+            ab.addModel(new NitroModel(reader.readBytes(subFileSize)));
         }
         ab.setIDLookupTable(ModelLookupTable);
         return ab;
@@ -167,7 +152,7 @@ public class BuildHandlerWB {
     public void loadBuildingData(Path path)
     {
         try {
-            buildingList = parseBLD(Files.readAllBytes(path));
+            buildingList = parseBLD(path);
         }
         catch (Exception e)
         {
@@ -175,32 +160,31 @@ public class BuildHandlerWB {
         }
     }
 
-    public WBBuildingList parseBLD(byte[] bld) throws Exception
+    public WBBuildingList parseBLD(Path input) throws Exception
     {
-        if (bld == null || bld.length == 0)
+        BinaryReader reader = new BinaryReader(input.toString());
+        if (reader.size() == 0)
             throw new Exception("Invalid BLD!");
 
-        ByteBuffer reader = ByteBuffer.wrap(bld);
-        reader.order(ByteOrder.LITTLE_ENDIAN);
         WBBuildingList bldList = new WBBuildingList();
-
-        int count = reader.getInt();
+        int count = (int) reader.readUInt32();
         for (int i = 0; i < count; i++)
         {
             WBBuildingEntry e = new WBBuildingEntry()
             {
                 {
-                    coords = new FX32[]{ new FX32(reader.getInt()),  new FX32(reader.getInt()), new FX32(reader.getInt()) };
-                    System.out.println(coords[2].Value());
-                    rotation = reader.getShort();
-                    reader.order(ByteOrder.BIG_ENDIAN);
-                    id = reader.getShort(); // GameFreak = trolls
-                    reader.order(ByteOrder.LITTLE_ENDIAN);
+                    coords = new FX32[] {
+                            new FX32((int) reader.readUInt32()),
+                            new FX32((int) reader.readUInt32()),
+                            new FX32((int) reader.readUInt32())
+                    };
+                    System.out.println(coords[2].GetValue());
+                    rotation = (short) reader.readUInt16();
+                    id = (short) ((reader.readUInt8() << 0x8) + reader.readUInt8()); // Reverse endian. GameFreak = trolls
                 }
             };
             bldList.add(e);
         }
-
         return bldList;
     }
 
@@ -211,9 +195,9 @@ public class BuildHandlerWB {
         buf.putInt(l.size()); // Write the number of entries
         for (int i = 0; i < l.size(); i++)
         {
-            buf.putInt(getBuildingList().get(i).coords[0].Value());
-            buf.putInt(getBuildingList().get(i).coords[1].Value());
-            buf.putInt(getBuildingList().get(i).coords[2].Value());
+            buf.putInt(getBuildingList().get(i).coords[0].GetValue());
+            buf.putInt(getBuildingList().get(i).coords[1].GetValue());
+            buf.putInt(getBuildingList().get(i).coords[2].GetValue());
             buf.putShort(getBuildingList().get(i).rotation);
             buf.order(ByteOrder.BIG_ENDIAN);
             buf.putShort(getBuildingList().get(i).id);
